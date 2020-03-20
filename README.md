@@ -25,10 +25,10 @@ docker run --rm -w /data -v `pwd`:/data covid19 bash covid19_call_variants.sh \
 
 This currently produces a `consensus.fa` file and a `variants.tsv`.
 
-# Testing
-This repository includes a local `requirements.txt` file for quickly running some golden output tests across a variety of datasets. This repository is set up to use Github Actions to automatically build the Docker image and run those tests to ensure there are no regressions.
+# Development & Testing
+This repository includes a local `requirements.txt` file for quickly running some golden output tests across a variety of datasets. This repository is set up to use Github Actions to automatically build the Docker image and run those tests to ensure there are no regressions. These ensure that parameter and pipeline changes don't affect variant calls or consensus sequence generation.
 
-This is to ensure that parameter and pipeline changes don't affect variant calls or consensus sequence generation.
+It also uses [`pre-commit`](https://pre-commit.com/) to keep things clean and orderly. To get started, first install the requirements (Python 3 required): `pip install -r requirements.txt`. Then install the `pre-commit` hooks: `pre-commit install --install-hooks`. Note that you'll also need [`shellcheck`](https://www.shellcheck.net/) installed on your system (`brew install shellcheck` on a Mac).
 
 # Acknowledgments
 Many thanks are due across the community, including _but not limited_ to:

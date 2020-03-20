@@ -15,6 +15,7 @@ mapping_mode=$(head -n 400 "$input_fastq" | awk -v "thresh=$threshold" 'NR % 4 =
 # Minimap2
 MINIMAP_OPTS="-K 20M -a -x $mapping_mode -t $threads"
 echo "[1] Running minimap with options: $MINIMAP_OPTS"
+# shellcheck disable=SC2086
 minimap2 $MINIMAP_OPTS "$reference" "$input_fastq"  | samtools view -u -h -F 4 - | samtools sort -@ "$threads" - > "${prefix}.sorted.bam"
 
 # Get only mapped reads
