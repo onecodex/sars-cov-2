@@ -17,10 +17,18 @@ docker build -t covid19 .
 Run the pipeline in the Docker image:
 
 ```sh
-docker run --rm -w /data -v `pwd`:/data covid19 bash covid19_call_variants.sh \
-    reference/nCoV-2019.reference.fasta \
-    data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
-    reference/artic-v1/ARTIC-V1.bed
+docker \
+  run \
+  --rm \
+  --workdir /data \
+  --volume `pwd`:/data \
+  --entrypoint /bin/bash \
+  --env prefix=test-covid19 \
+  --env reference=reference/nCoV-2019.reference.fasta \
+  --env input_fastq=data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
+  --env primer_bed_file=reference/artic-v1/ARTIC-V1.bed \
+  covid19 \
+  covid19_call_variants.sh
 ```
 
 This currently produces a `consensus.fa` file and a `variants.tsv`.
