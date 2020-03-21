@@ -35,6 +35,18 @@ docker \
   covid19_call_variants.sh
 ```
 
+To run the tests (in Docker):
+
+```sh
+docker \
+  run \
+  --volume $(pwd)/reference:/pipeline/reference \
+  --rm \
+  -ti \
+  covid19 \
+  pytest
+```
+
 This currently produces a `consensus.fa` file and a `variants.tsv`.
 
 # Development & Testing
