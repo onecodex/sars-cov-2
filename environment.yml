@@ -14,3 +14,6 @@ dependencies:
   - pip:
     - onecodex[all]==0.7.2
     - notebook==6.0.3
+    - pandas
+    - pytest
+    - snp-mutator

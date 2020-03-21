@@ -1,2 +1,4 @@
 pytest
 pre-commit
+pandas
+snp-mutator
