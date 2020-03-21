@@ -1,6 +1,8 @@
 # SARS-CoV-2
 
-SARS-CoV-2 variant calling and consensus assembly pipeline
+SARS-CoV-2 variant calling and consensus assembly pipeline using [ivar](https://github.com/andersen-lab/ivar) and [minimap2](https://github.com/lh3/minimap2).
+
+⚠️ **As of March 20th, this pipeline support ARTIC v1 primers, capture-based approaches, and RNA-seq _on Illumina platforms_. We expect to add ONT support in the coming days, but recommend looking at the [ARTIC Network protocol](https://artic.network/ncov-2019) in the meantime.**
 
 # Quick start
 
@@ -44,6 +46,5 @@ It also uses [`pre-commit`](https://pre-commit.com/) to keep things clean and or
 # Acknowledgments
 
 Many thanks are due across the community, including _but not limited_ to:
-- X, Y, and Z for sharing data
-- @torstenseeman, @gkarthik, @nickloman, and many others for quick discussions on optimal SNP calling for both amplicon (ARTIC primers) and non-amplicon sequencing approaches
-- @nickloman, @joshquick, @rambaut, @k-florek and others working on the [ARTIC protocol for SARS-CoV-2](https://github.com/artic-network/artic-ncov2019)
+- [@tseemann](https://github.com/tseemann), [@gkarthik](https://github.com/gkarthik), [@nickloman](https://github.com/nickloman), and many others for quick discussions on optimal SNP calling for both amplicon (ARTIC primers) and non-amplicon sequencing approaches
+- [@nickloman](https://github.com/nickloman), [@joshquick](https://github.com/joshquick), [@rambaut](https://github.com/rambaut), [@k-florek](https://github.com/k-florek) and others working on the [ARTIC protocol for SARS-CoV-2](https://github.com/artic-network/artic-ncov2019)
