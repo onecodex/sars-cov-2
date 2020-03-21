@@ -1,0 +1,5 @@
+.python-version
+*.ipynb
+.vscode/*
+*.fai
+__pycache__*
