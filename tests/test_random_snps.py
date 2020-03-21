@@ -40,18 +40,8 @@ def run_art(
     read_length=150,
     coverage=50,
 ):
-    return subprocess.call(
+    return subprocess.check_output(
         [
-            "docker",
-            "run",
-            "--rm",
-            "-v",
-            f"{os.getcwd()}:/repo",
-            "-v",
-            f"{tmp_path}:/pytest",
-            "-w",
-            "/pytest",
-            "covid19",
             "art_illumina",
             "--seqSys",
             system,
@@ -67,7 +57,7 @@ def run_art(
             "--fcov",
             f"{coverage:.2f}",
             "--in",
-            f"/pytest/{input_reference}",
+            f"{input_reference}",
             "--out",
             "simulated_reads_",
         ]
@@ -75,23 +65,12 @@ def run_art(
 
 
 def run_covid_pipeline(tmp_path, input_filename="nCoV-2019.reference_mutated_1.fasta"):
-    return subprocess.call(
+    return subprocess.check_output(
         [
-            "docker",
-            "run",
-            "--rm",
-            "-v",
-            f"{os.getcwd()}:/repo",
-            "-v",
-            f"{tmp_path}:/pytest",
-            "-w",
-            "/pytest",
-            "covid19",
-            "/bin/bash",
-            "/repo/covid19_call_variants.sh",
-            "/repo/reference/nCoV-2019.reference.fasta",
-            f"/pytest/{input_filename}",
-            "/repo/reference/artic-v1/ARTIC-V1.bed",
+            "./covid19_call_variants.sh",
+            "reference/nCoV-2019.reference.fasta",
+            f"{input_filename}",
+            "reference/artic-v1/ARTIC-V1.bed",
         ]
     )
 
@@ -104,8 +83,7 @@ def test_snps_only_fasta(tmp_path, n):
     run_from_args(args)
 
     # Run pipeline on simulated data
-    p = run_covid_pipeline(tmp_path)
-    assert p == 0
+    run_covid_pipeline(tmp_path)
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
@@ -123,12 +101,10 @@ def test_snps_only_fastq(tmp_path, n):
     run_from_args(args)
 
     # Run ART
-    p = run_art(tmp_path)
-    assert p == 0
+    run_art(tmp_path)
 
     # Run pipeline on simulated data
-    p = run_covid_pipeline(tmp_path, input_filename="simulated_reads_1.fq")
-    assert p == 0
+    run_covid_pipeline(tmp_path, input_filename="simulated_reads_1.fq")
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
