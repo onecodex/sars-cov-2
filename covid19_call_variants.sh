@@ -7,10 +7,10 @@
 
 set -eou pipefail
 
-# argv
-reference="$1"
-input_fastq="$2"
-primer_bed_file="$3"
+# argv /
+: ${reference:=${1}}
+: ${input_fastq:=${2}}
+: ${primer_bed_file:=${3}}
 
 # defaults
 : "${length_threshold:=600}" # max length to be considered "short read" sequencing
