@@ -82,7 +82,7 @@ samtools \
   --max-depth 1000000 \
   --count-orphans \
   --no-BAQ \
-  --min-BAQ 0 \
+  --min-BQ 0 \
   "${prefix}.sorted.bam" \
   | \
   ivar \
@@ -98,7 +98,7 @@ samtools \
   --max-depth 1000000 \
   --count-orphans \
   --no-BAQ \
-  --min-BQ 0
+  --min-BQ 0 \
   "${prefix}.sorted.bam" \
   | ivar \
     consensus \
@@ -111,3 +111,6 @@ sed \
   '/>/ s/$/ | One Codex consensus sequence/' \
   < "${prefix}.ivar.fa" \
   > "${prefix}.consensus.fa"
+
+
+echo "finished!"
