@@ -52,9 +52,6 @@ minimap2 ${MINIMAP_OPTS} \
     - \
   > "${prefix}.sorted.bam"
 
-# Get only mapped reads
-echo "[2] Removing unmapped reads"
-
 # Trim with ivar
 echo "[2] Trimming with ivar"
 samtools index "${prefix}.sorted.bam"
