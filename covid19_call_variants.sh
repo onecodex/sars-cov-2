@@ -7,6 +7,11 @@
 
 set -eou pipefail
 
+# argv
+reference="$1"
+input_fastq="$2"
+primer_bed_file="$3"
+
 # defaults
 : "${length_threshold:=600}" # max length to be considered "short read" sequencing
 : "${threads:=4}"
@@ -46,9 +51,6 @@ minimap2 ${MINIMAP_OPTS} \
     --threads "${threads}" \
     - \
   > "${prefix}.sorted.bam"
-
-# Get only mapped reads
-echo "[2] Removing unmapped reads"
 
 # Trim with ivar
 echo "[2] Trimming with ivar"
@@ -113,4 +115,9 @@ sed \
   > "${prefix}.consensus.fa"
 
 
-echo "finished!"
+# Move some files around and clean up
+mv "${prefix}.consensus.fa" "consensus.fa"
+mv "${prefix}.ivar.tsv" "variants.tsv"
+rm "${prefix}"*
+
+echo "[ ] Finished!"

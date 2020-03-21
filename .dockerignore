@@ -1,2 +1,4 @@
 data/*
 .git/
+benchmarks/
+reference/
