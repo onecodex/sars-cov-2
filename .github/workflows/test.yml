@@ -1,0 +1,44 @@
+name: test
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  simulated_data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+          lfs: true
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+
+      - name: Cache virtualenv
+        uses: actions/cache@v1
+        id: cache-pip
+        with:
+          path: venv
+          key: venv-${{ hashFiles('requirements.txt') }}-0.4.1-0.1.0
+
+      - name: Install dependencies in a venv
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install -q -U pip
+          pip install --progress-bar=off -r requirements.txt
+
+      - name: Docker build
+        run: |
+          docker build -t covid19 .
+
+      - name: Run lint checks & tests
+        run: |
+          . venv/bin/activate
+          make test
