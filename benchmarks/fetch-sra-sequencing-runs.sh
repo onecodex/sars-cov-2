@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+# shellcheck disable=SC2016
 bq \
   query \
   --format json \

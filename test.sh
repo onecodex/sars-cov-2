@@ -10,7 +10,7 @@ docker \
   run \
   --rm \
   --workdir /data \
-  --volume `pwd`:/data \
+  --volume "$(pwd)":/data \
   --entrypoint /bin/bash \
   --env prefix=helloworld  \
   --env reference=reference/nCoV-2019.reference.fasta \
