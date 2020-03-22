@@ -67,10 +67,10 @@ def run_art(
 def run_covid_pipeline(tmp_path, input_filename="nCoV-2019.reference_mutated_1.fasta"):
     return subprocess.check_output(
         [
-            "./covid19_call_variants.sh",
-            "reference/nCoV-2019.reference.fasta",
+            "covid19_call_variants.sh",
+            "/pipeline/reference/nCoV-2019.reference.fasta",
             f"{input_filename}",
-            "reference/artic-v1/ARTIC-V1.bed",
+            "/pipeline/reference/artic-v1/ARTIC-V1.bed",
         ]
     )
 
@@ -79,11 +79,20 @@ def run_covid_pipeline(tmp_path, input_filename="nCoV-2019.reference_mutated_1.f
 def test_snps_only_fasta(tmp_path, n):
     """Tests insert of N snps
     """
-    args = _generate_snp_mutator_args("reference/nCoV-2019.reference.fasta", tmp_path, num_subs=n)
+    os.chdir(tmp_path)
+
+    args = _generate_snp_mutator_args(
+        "/pipeline/reference/nCoV-2019.reference.fasta", tmp_path, num_subs=n
+    )
+
+    # generates reference_mutated.fasta
     run_from_args(args)
+    input_path = tmp_path / "nCoV-2019.reference_mutated_1.fasta"
 
     # Run pipeline on simulated data
-    run_covid_pipeline(tmp_path)
+    # this will happen in /pipeline ... we need it to happen in /tmp
+
+    run_covid_pipeline(tmp_path, input_filename=input_path)
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
@@ -97,7 +106,12 @@ def test_snps_only_fasta(tmp_path, n):
 def test_snps_only_fastq(tmp_path, n):
     """Tests insert of N snps
     """
-    args = _generate_snp_mutator_args("reference/nCoV-2019.reference.fasta", tmp_path, num_subs=n)
+
+    os.chdir(tmp_path)
+
+    args = _generate_snp_mutator_args(
+        "/pipeline/reference/nCoV-2019.reference.fasta", tmp_path, num_subs=n
+    )
     run_from_args(args)
 
     # Run ART

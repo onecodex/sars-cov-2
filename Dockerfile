@@ -14,4 +14,6 @@ ADD . /pipeline
 
 WORKDIR /pipeline
 
+ADD covid19_call_variants.sh /usr/bin/covid19_call_variants.sh
+
 ENV PATH /opt/conda/envs/covid-19/bin:$PATH
