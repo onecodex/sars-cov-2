@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+out_path="${1}.fastq.gz"
+
 fastq-dump \
   --split-spot \
   --read-filter \
@@ -11,4 +13,8 @@ fastq-dump \
   --stdout \
   --dumpbase \
   --clip \
-  "${1}"
+  "${1}" \
+  | pigz \
+  > "${out_path}"
+
+echo "${out_path}"
