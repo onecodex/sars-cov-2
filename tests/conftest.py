@@ -1,14 +1,18 @@
+# Helper functions for running the Docker pipeline and snp-mutator
+# TODO: Refactor into fixtures?
 from argparse import Namespace
 import os
 import subprocess
 
-import pandas as pd
-import pytest
 from snpmutator.script import run_from_args
 
 
+def run_snp_mutator(*args, **kwargs):
+    return run_from_args(_generate_snp_mutator_args(*args, **kwargs))
+
+
 def _generate_snp_mutator_args(
-    input_fasta_file, tmp_path, num_subs=10, num_insertions=0, num_deletions=0, random_seed=None
+    input_fasta_file, tmp_path, num_subs=10, num_insertions=0, num_deletions=0, random_seed=42
 ):
     """Wrapper to generate args for SNP mutator
     """
@@ -40,7 +44,7 @@ def run_art(
     read_length=150,
     coverage=50,
 ):
-    return subprocess.call(
+    subprocess.check_output(
         [
             "docker",
             "run",
@@ -75,7 +79,7 @@ def run_art(
 
 
 def run_covid_pipeline(tmp_path, input_filename="nCoV-2019.reference_mutated_1.fasta"):
-    return subprocess.call(
+    subprocess.call(
         [
             "docker",
             "run",
@@ -90,50 +94,7 @@ def run_covid_pipeline(tmp_path, input_filename="nCoV-2019.reference_mutated_1.f
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
             "/repo/reference/nCoV-2019.reference.fasta",
-            f"/pytest/{input_filename}",
+            input_filename,
             "/repo/reference/artic-v1/ARTIC-V1.bed",
         ]
     )
-
-
-@pytest.mark.parametrize("n", [x for x in range(1, 10)])
-def test_snps_only_fasta(tmp_path, n):
-    """Tests insert of N snps
-    """
-    args = _generate_snp_mutator_args("reference/nCoV-2019.reference.fasta", tmp_path, num_subs=n)
-    run_from_args(args)
-
-    # Run pipeline on simulated data
-    p = run_covid_pipeline(tmp_path)
-    assert p == 0
-
-    # Check that all variants are detected and there are no extras
-    truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
-    called = pd.read_csv(open(tmp_path / "variants.tsv"), sep="\t")
-    assert all(truth["Position"] == called["POS"])
-    assert all(truth["OriginalBase"] == called["REF"])
-    assert all(truth["NewBase"] == called["ALT"])
-
-
-@pytest.mark.xfail(strict=False)  # some of these fail at the moment, but *should not*
-@pytest.mark.parametrize("n", [x for x in range(1, 10)])
-def test_snps_only_fastq(tmp_path, n):
-    """Tests insert of N snps
-    """
-    args = _generate_snp_mutator_args("reference/nCoV-2019.reference.fasta", tmp_path, num_subs=n)
-    run_from_args(args)
-
-    # Run ART
-    p = run_art(tmp_path)
-    assert p == 0
-
-    # Run pipeline on simulated data
-    p = run_covid_pipeline(tmp_path, input_filename="simulated_reads_1.fq")
-    assert p == 0
-
-    # Check that all variants are detected and there are no extras
-    truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
-    called = pd.read_csv(open(tmp_path / "variants.tsv"), sep="\t")
-    assert all(truth["Position"] == called["POS"])
-    assert all(truth["OriginalBase"] == called["REF"])
-    assert all(truth["NewBase"] == called["ALT"])
