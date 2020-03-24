@@ -4,7 +4,7 @@
 
 SARS-CoV-2 variant calling and consensus assembly pipeline using [ivar](https://github.com/andersen-lab/ivar) and [minimap2](https://github.com/lh3/minimap2).
 
-⚠️ **As of March 20th, this pipeline support ARTIC v1 primers, capture-based approaches, and RNA-seq _on Illumina platforms_. We expect to add ONT support in the coming days, but recommend looking at the [ARTIC Network protocol](https://artic.network/ncov-2019) in the meantime.**
+⚠️ **As of March 24th, this pipeline support ARTIC v1 primers, capture-based approaches, and RNA-seq _on Illumina platforms_. We expect to add ONT support in the coming days, but recommend looking at the [ARTIC Network protocol](https://artic.network/ncov-2019) in the meantime.**
 
 # Quick start
 
