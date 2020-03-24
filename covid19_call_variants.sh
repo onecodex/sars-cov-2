@@ -82,7 +82,7 @@ echo "[4] Generating variants TSV"
 samtools \
   mpileup \
   --fasta-ref "${reference}" \
-  --max-depth 1000000 \
+  --max-depth 0 \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
@@ -98,7 +98,7 @@ echo "[5] Generating consensus sequence"
 samtools \
   mpileup \
   --fasta-ref "${reference}" \
-  --max-depth 1000000 \
+  --max-depth 0 \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
