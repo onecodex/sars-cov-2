@@ -60,6 +60,7 @@ samtools index "${prefix}.sorted.bam"
 ivar \
   trim \
   -e \
+  -q 0 \
   -i "${prefix}.sorted.bam" \
   -b "${primer_bed_file}" \
   -p "${prefix}.ivar"

@@ -43,6 +43,23 @@ def _generate_snp_mutator_args(
     return args
 
 
+def _interleave_fastqs(r1, r2, output_filename):
+    """Helper function to interleave ART outputs for minimap2
+    """
+    with open(r1) as f1, open(r2) as f2, open(output_filename, "w") as fout:
+        while True:
+            line = f1.readline()
+            if line.strip() == "":
+                break
+            fout.write(line)
+
+            for _ in range(3):
+                fout.write(f1.readline())
+
+            for _ in range(4):
+                fout.write(f2.readline())
+
+
 @pytest.fixture
 def run_art(tmp_path):
     def _run_art(
@@ -82,6 +99,11 @@ def run_art(tmp_path):
                 "--out",
                 "simulated_reads_",
             ]
+        )
+        _interleave_fastqs(
+            f"{tmp_path}/simulated_reads_1.fq",
+            f"{tmp_path}/simulated_reads_2.fq",
+            f"{tmp_path}/simulated_reads.fq",
         )
 
     return _run_art
