@@ -1,3 +1,4 @@
+from Bio import SeqIO
 import pandas as pd
 import pytest
 
@@ -38,9 +39,15 @@ def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutat
     assert all(truth["OriginalBase"] == called["REF"])
     assert all(truth["NewBase"] == called["ALT"])
 
-    # Note: `ivar trim -e` on WGS removes ~50% of the data
     # We add these tests to ensure we have a high percent of reads aligning
     # We simulate at 50x, so low end variants with coverage variability should
     # be ~25-30x, and then another ~33-50% due to Q scores <20
     assert (called["ALT_DP"] > 10).all()
     assert called["ALT_DP"].mean() > 15
+
+    # Finally, test that the FASTAs match
+    # Note we ignore the first 50bp which may have low coverage and N masking
+    # plus the final 120bps due to a polyA tail
+    reference = list(SeqIO.parse(f"{tmp_path}/nCoV-2019.reference_mutated_1.fasta", "fasta"))[0]
+    consensus = list(SeqIO.parse(f"{tmp_path}/consensus.fa", "fasta"))[0]
+    assert consensus.seq[50:-120] in reference.seq
