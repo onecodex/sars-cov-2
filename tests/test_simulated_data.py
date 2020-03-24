@@ -29,7 +29,7 @@ def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutat
     run_art()
 
     # Run pipeline on simulated data
-    run_covid_pipeline(input_filename="simulated_reads_1.fq")
+    run_covid_pipeline(input_filename="simulated_reads.fq")
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
@@ -38,5 +38,9 @@ def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutat
     assert all(truth["OriginalBase"] == called["REF"])
     assert all(truth["NewBase"] == called["ALT"])
 
-    # We simulate at 50x, so all calls should be >= 10x
+    # Note: `ivar trim -e` on WGS removes ~50% of the data
+    # We add these tests to ensure we have a high percent of reads aligning
+    # We simulate at 50x, so low end variants with coverage variability should
+    # be ~25-30x, and then another ~33-50% due to Q scores <20
     assert (called["ALT_DP"] > 10).all()
+    assert called["ALT_DP"].mean() > 15
