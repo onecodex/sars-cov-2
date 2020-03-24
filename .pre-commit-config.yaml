@@ -27,3 +27,8 @@ repos:
     hooks:
     - id: shell-lint
       args: [--format=json]
+  - repo: https://github.com/kynan/nbstripout
+    rev: master
+    hooks:
+      - id: nbstripout
+        files: ".ipynb"
