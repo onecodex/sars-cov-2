@@ -1,16 +1,14 @@
-from conftest import run_covid_pipeline
 import pandas as pd
 
 
-def test_twist_truth_data(tmp_path):
+def test_twist_truth_data(tmp_path, run_covid_pipeline):
     """Tests insert of N snps
     """
     # Run pipeline on simulated data
     run_covid_pipeline(
-        tmp_path,
         input_filename=(
             "/repo/data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz"
-        ),
+        )
     )
     truth = pd.read_csv(open("data/twist-target-capture/truth.tsv"), sep="\t")
     called = pd.read_csv(open(tmp_path / "variants.tsv"), sep="\t")
