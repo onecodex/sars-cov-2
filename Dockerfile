@@ -20,5 +20,6 @@ RUN apt-get install -yq \
     && rm -rf /var/lib/apt/lists/*
 
 ADD covid19_call_variants.sh /usr/local/bin/
+ADD report.ipynb .
 
 ENV PATH /opt/conda/envs/covid-19/bin:$PATH
