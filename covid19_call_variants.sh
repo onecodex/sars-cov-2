@@ -119,6 +119,7 @@ sed \
 # Move some files around and clean up
 mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.ivar.tsv" "variants.tsv"
+mv "${prefix}.sorted.bam" "covid19.bam"
 rm "${prefix}"*
 
 echo "[ ] Finished!"
