@@ -86,6 +86,8 @@ samtools \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
+  --min-MQ 20 \
+  --region MN908947.3:1-29870 \
   "${prefix}.sorted.bam" \
   | \
   ivar \
@@ -102,6 +104,8 @@ samtools \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
+  --min-MQ 20 \
+  --region MN908947.3:1-29870 \
   "${prefix}.sorted.bam" \
   | ivar \
     consensus \
