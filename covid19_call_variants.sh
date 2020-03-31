@@ -77,8 +77,7 @@ samtools \
   index \
   "${prefix}.sorted.bam"
 
-
-echo "[4] Generating variants TSV"
+echo "[4] Generating pileup"
 samtools \
   mpileup \
   --fasta-ref "${reference}" \
@@ -86,29 +85,27 @@ samtools \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
+  --min-MQ 20 \
+  --region MN908947.3:1-29870 \
   "${prefix}.sorted.bam" \
-  | \
-  ivar \
+  > "${prefix}.pileup"
+
+echo "[5] Generating variants TSV"
+ivar \
   variants \
   -p "${prefix}.ivar" \
-  -t 0.6
+  -t 0.6 \
+  < "${prefix}.pileup"
 
 # Generate consensus sequence with ivar
-echo "[5] Generating consensus sequence"
-samtools \
-  mpileup \
-  --fasta-ref "${reference}" \
-  --max-depth 0 \
-  --count-orphans \
-  --no-BAQ \
-  --min-BQ 0 \
-  "${prefix}.sorted.bam" \
-  | ivar \
-    consensus \
-    -p "${prefix}".ivar \
-    -m 1 \
-    -t 0.6 \
-    -n N
+echo "[6] Generating consensus sequence"
+ivar \
+  consensus \
+  -p "${prefix}".ivar \
+  -m 1 \
+  -t 0.6 \
+  -n N \
+  < "${prefix}.pileup"
 
 sed \
   '/>/ s/$/ | One Codex consensus sequence/' \
@@ -120,6 +117,7 @@ sed \
 mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.ivar.tsv" "variants.tsv"
 mv "${prefix}.sorted.bam" "covid19.bam"
+mv "${prefix}.pileup" "covid19.pileup"
 rm "${prefix}"*
 
 echo "[ ] Finished!"
