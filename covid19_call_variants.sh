@@ -117,6 +117,7 @@ sed \
 mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.ivar.tsv" "variants.tsv"
 mv "${prefix}.sorted.bam" "covid19.bam"
+mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
 mv "${prefix}.pileup" "covid19.pileup"
 rm "${prefix}"*
 
