@@ -16,12 +16,14 @@ set -eou pipefail
 : "${length_threshold:=600}" # max length to be considered "short read" sequencing
 : "${threads:=4}"
 : "${prefix:=results}"
+: "${min_quality:=20}"
 
 echo "reference=${reference}"
 echo "input_fastq=${input_fastq}"
 echo "primer_bed_file=${primer_bed_file}"
 echo "length_threshold=${length_threshold}"
 echo "threads=${threads}"
+echo "min_quality=${min_quality}"
 
 
 # detect if we have long or short reads to adjust minimap2 parameters
@@ -36,14 +38,18 @@ mapping_mode=$(
 MINIMAP_OPTS="-K 20M -a -x ${mapping_mode} -t ${threads}"
 echo "[1] Running minimap with options: ${MINIMAP_OPTS}"
 
+# Trim polyA tail for alignment (33 bases)
+seqtk trimfq -e 33 "${reference}" > "${reference}.trimmed.fa"
+
 # shellcheck disable=SC2086
 minimap2 ${MINIMAP_OPTS} \
-  "${reference}" \
+  "${reference}.trimmed.fa" \
   "${input_fastq}"  \
   | samtools \
     view \
     -u \
     -h \
+    -q $min_quality \
     -F \
     4 - \
   | samtools \
@@ -51,6 +57,8 @@ minimap2 ${MINIMAP_OPTS} \
     --threads "${threads}" \
     - \
   > "${prefix}.sorted.bam"
+
+rm "${reference}.trimmed.fa"
 
 # Trim with ivar
 echo "[2] Trimming with ivar"
@@ -85,8 +93,6 @@ samtools \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
-  --min-MQ 20 \
-  --region MN908947.3:1-29870 \
   "${prefix}.sorted.bam" \
   > "${prefix}.pileup"
 
@@ -118,7 +124,6 @@ mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.ivar.tsv" "variants.tsv"
 mv "${prefix}.sorted.bam" "covid19.bam"
 mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
-mv "${prefix}.pileup" "covid19.pileup"
 rm "${prefix}"*
 
 echo "[ ] Finished!"
