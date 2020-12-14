@@ -1,6 +1,7 @@
 # SARS-CoV-2
 
 [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/test/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/pre-commit/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Docker Repository on Quay](https://quay.io/repository/refgenomics/covid19/status "Docker Repository on Quay")](https://quay.io/repository/refgenomics/covid19)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fonecodex%2Fsars-cov-2.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fonecodex%2Fsars-cov-2?ref=badge_shield)
 
 
 SARS-CoV-2 variant calling and consensus assembly pipeline using [ivar](https://github.com/andersen-lab/ivar) and [minimap2](https://github.com/lh3/minimap2).
@@ -56,3 +57,7 @@ It also uses [`pre-commit`](https://pre-commit.com/) to keep things clean and or
 Many thanks are due across the community, including _but not limited_ to:
 - [@tseemann](https://github.com/tseemann), [@gkarthik](https://github.com/gkarthik), [@nickloman](https://github.com/nickloman), and many others for quick discussions on optimal SNP calling for both amplicon (ARTIC primers) and non-amplicon sequencing approaches
 - [@nickloman](https://github.com/nickloman), [@joshquick](https://github.com/joshquick), [@rambaut](https://github.com/rambaut), [@k-florek](https://github.com/k-florek) and others working on the [ARTIC protocol for SARS-CoV-2](https://github.com/artic-network/artic-ncov2019)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fonecodex%2Fsars-cov-2.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fonecodex%2Fsars-cov-2?ref=badge_large)
