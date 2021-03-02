@@ -108,7 +108,7 @@ echo "[6] Generating consensus sequence"
 ivar \
   consensus \
   -p "${prefix}".ivar \
-  -m 1 \
+  -m 10 \
   -t 0.6 \
   -n N \
   < "${prefix}.pileup"
