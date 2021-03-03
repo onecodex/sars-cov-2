@@ -59,7 +59,9 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
 # Report generation
 RUN npm install -g --unsafe-perm vega-lite vega-cli canvas
 
-RUN pip install git+https://github.com/onecodex/altair_saver@a4be53dad5df23d68f37f2bb9f0782ab79ef7c96#egg=altair_saver git+https://github.com/onecodex/onecodex@3adfb95bc639435d41c9e5a337a9887e82024cb0#egg=onecodex[all,reports]
+RUN pip install \
+  git+https://github.com/onecodex/altair_saver@a4be53dad5df23d68f37f2bb9f0782ab79ef7c96#egg=altair_saver \
+  git+https://github.com/onecodex/onecodex@74c502956a033c335363ccbf5d461791814adad8#egg=onecodex[all,reports]
 
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh .
