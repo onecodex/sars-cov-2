@@ -1,0 +1,23 @@
+name: pangolin
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bcftools=1.10.2
+  - biopython=1.74
+  - minimap2>=2.16
+  - pip=19.3.1
+  - python=3.7
+  - snakemake-minimal=5.13
+  - gofasta
+  - openjdk=11.0.8
+  - art=2016.06.05
+  - pango
+  - cairo
+  - weasyprint
+  - pip
+  - pip:
+    - biopython
+    - pandas==1.0.1
+    - git+https://github.com/cov-lineages/pangoLEARN.git
