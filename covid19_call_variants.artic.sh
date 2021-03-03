@@ -50,8 +50,9 @@ source activate pangolin
 cd /
 mkdir /snpEff/data
 mkdir /snpEff/data/MN908947.3
-mv nCoV-2019.reference.fasta /snpEff/data/MN908947.3/sequences.fa
-mv nCoV-2019.reference.gtf /snpEff/data/MN908947.3/genes.gtf
+
+mv /share/nCoV-2019.reference.fasta /snpEff/data/MN908947.3/sequences.fa
+mv /share/nCoV-2019.reference.gtf /snpEff/data/MN908947.3/genes.gtf
 
 # Add the custom genome/gtf to a config file
 cd snpEff

@@ -64,10 +64,7 @@ RUN pip install \
   git+https://github.com/onecodex/onecodex@74c502956a033c335363ccbf5d461791814adad8#egg=onecodex[all,reports]
 
 ADD covid19_call_variants.sh /usr/local/bin/
-ADD covid19_call_variants.artic.sh .
+ADD covid19_call_variants.artic.sh /usr/local/bin/
+ADD generate_tsv.py /usr/local/bin
+
 ADD report.ipynb .
-ADD nCoV-2019.reference.fasta .
-ADD nCoV-2019.reference.gtf .
-ADD aa_codes.txt .
-ADD annot_table.orfs.txt .
-ADD generate_tsv.py .
