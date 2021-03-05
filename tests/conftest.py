@@ -18,8 +18,7 @@ def run_snp_mutator(tmp_path):
 def _generate_snp_mutator_args(
     tmp_path, input_fasta_file=None, num_subs=10, num_insertions=0, num_deletions=0, random_seed=42
 ):
-    """Wrapper to generate args for SNP mutator
-    """
+    """Wrapper to generate args for SNP mutator"""
     if input_fasta_file is None:
         raise Exception("Requires an input reference FASTA")
     kwargs = locals()
@@ -44,8 +43,7 @@ def _generate_snp_mutator_args(
 
 
 def _interleave_fastqs(r1, r2, output_filename):
-    """Helper function to interleave ART outputs for minimap2
-    """
+    """Helper function to interleave ART outputs for minimap2"""
     with open(r1) as f1, open(r2) as f2, open(output_filename, "w") as fout:
         while True:
             line = f1.readline()
@@ -108,7 +106,7 @@ def run_docker_container(tmp_path, container_command):
         "--rm",
         *("--volume", f"{os.getcwd()}:/repo"),
         *("--volume", f"{tmp_path}:/pytest"),
-        *("--volume", f"{os.getcwd()}/reference-share/:/share"),
+        *("--volume", f"{os.getcwd()}/reference/:/share"),
         *("--workdir", "/pytest"),
         "covid19",
         *container_command,
