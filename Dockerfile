@@ -47,11 +47,15 @@ ENV PATH /opt/conda/envs/covid-19/bin:$PATH
 # Install nextclade CLI
 RUN npm install --global @neherlab/nextclade
 
+COPY environment.yml /
+
+RUN /opt/conda/bin/conda env create -f /environment.yml \
+  && /opt/conda/bin/conda clean -a
+ENV PATH /opt/conda/envs/covid-19/bin:$PATH
+
 # Create post-ARTIC environment (Pangolin plus additional dependencies; still called pangolin)
-COPY post-artic.yml .
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
-        && mv ../post-artic.yml environment.yml \
         && /opt/conda/bin/conda env create -f environment.yml \
         && /opt/conda/bin/conda run -n pangolin python setup.py install \
         && /opt/conda/bin/conda clean -a
@@ -66,5 +70,10 @@ RUN pip install \
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
+
+COPY environment.yml /
+
+RUN /opt/conda/bin/conda env create -f /environment.yml && /opt/conda/bin/conda clean -a
+ENV PATH /opt/conda/envs/covid-19/bin:$PATH
 
 ADD report.ipynb .
