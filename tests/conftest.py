@@ -73,31 +73,23 @@ def run_art(tmp_path):
                 "docker",
                 "run",
                 "--rm",
-                "-v",
-                f"{os.getcwd()}:/repo",
-                "-v",
-                f"{tmp_path}:/pytest",
-                "-w",
+                *("--volume", f"{os.getcwd()}:/repo"),
+                *("--volume", f"{tmp_path}:/pytest"),
+                "--workdir",
                 "/pytest",
                 "covid19",
-                "art_illumina",
-                "--seqSys",
-                system,
-                "--len",
-                f"{read_length}",
-                "--mflen",
-                "200",
-                "--sdev",
-                "10",
-                "--paired",
-                "--rndSeed",
-                "1",
-                "--fcov",
-                f"{coverage:.2f}",
-                "--in",
-                f"/pytest/{input_reference}",
-                "--out",
-                "simulated_reads_",
+                *(
+                    "art_illumina",
+                    "--paired",
+                    *("--seqSys", system),
+                    *("--len", f"{read_length}"),
+                    *("--mflen", "200"),
+                    *("--sdev", "10"),
+                    *("--rndSeed", "1"),
+                    *("--fcov", f"{coverage:.2f}"),
+                    *("--in", f"/pytest/{input_reference}"),
+                    *("--out", "simulated_reads_"),
+                ),
             ]
         )
         _interleave_fastqs(
@@ -109,27 +101,70 @@ def run_art(tmp_path):
     return _run_art
 
 
-@pytest.fixture
-def run_covid_pipeline(tmp_path):
-    def _run_covid_pipeline(input_filename="nCoV-2019.reference_mutated_1.fasta"):
-        subprocess.call(
-            [
-                "docker",
-                "run",
-                "--rm",
-                "-v",
-                f"{os.getcwd()}:/repo",
-                "-v",
-                f"{tmp_path}:/pytest",
-                "-w",
-                "/pytest",
-                "covid19",
-                "/bin/bash",
-                "/repo/covid19_call_variants.sh",
-                "/repo/reference/nCoV-2019.reference.fasta",
-                input_filename,
-                "/repo/reference/artic-v1/ARTIC-V1.bed",
-            ]
+def run_docker_container(tmp_path, container_command):
+    command = [
+        "docker",
+        "run",
+        "--rm",
+        *("--volume", f"{os.getcwd()}:/repo"),
+        *("--volume", f"{tmp_path}:/pytest"),
+        *("--volume", f"{os.getcwd()}/reference-share/:/share"),
+        *("--workdir", "/pytest"),
+        "covid19",
+        *container_command,
+    ]
+
+    result = subprocess.run(
+        command,
+        capture_output=True,
+    )
+
+    if result.returncode != 0:
+        raise Exception(
+            "\n".join(
+                [
+                    "Command Failed!",
+                    "command:",
+                    " ".join(command),
+                    "stdout:",
+                    result.stdout.decode("utf-8"),
+                    "stderr:",
+                    result.stderr.decode("utf-8"),
+                ]
+            )
         )
 
+    return result
+
+
+@pytest.fixture
+def run_covid_pipeline(tmp_path):
+    def _run_covid_pipeline(
+        input_filename="nCoV-2019.reference_mutated_1.fasta",
+    ):
+
+        container_command = [
+            "/bin/bash",
+            "/repo/covid19_call_variants.sh",
+            "/repo/reference/nCoV-2019.reference.fasta",
+            input_filename,
+            "/repo/reference/artic-v1/ARTIC-V1.bed",
+        ]
+
+        run_docker_container(tmp_path, container_command)
+
     return _run_covid_pipeline
+
+
+@pytest.fixture
+def run_artic_covid_pipeline(tmp_path):
+    def _run_artic_covid_pipeline(input_filename):
+        container_command = [
+            "/bin/bash",
+            "/repo/covid19_call_variants.artic.sh",
+            input_filename,
+        ]
+
+        run_docker_container(tmp_path, container_command)
+
+    return _run_artic_covid_pipeline

@@ -16,3 +16,10 @@ def test_sra_illumina_artic(tmp_path, run_covid_pipeline):
     assert all(truth["Position"] == called["POS"])
     assert all(truth["OriginalBase"] == called["REF"])
     assert all(truth["NewBase"] == called["ALT"])
+
+
+def test_ont_artic(tmp_path, run_artic_covid_pipeline):
+    run_artic_covid_pipeline(input_filename="/repo/data/ARTIC/ont-artic-sample.fastq.gz")
+    called = pd.read_csv(tmp_path / "variants.tsv", sep="\t")
+
+    assert called.shape == (42, 5)
