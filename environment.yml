@@ -1,4 +1,4 @@
-name: covid-19
+name: pangolin 
 channels:
   - conda-forge
   - bioconda
