@@ -15,12 +15,13 @@ RUN apt-get update && apt-get install -y g++ \
 
 # Needed for report generation
 RUN apt-get install -yq \
-	fonts-dejavu \
-	fonts-texgyre \
-	texlive-fonts-recommended \
-	texlive-generic-recommended \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
+  texlive-xetex \
+  fonts-dejavu \
+  fonts-texgyre \
+  texlive-fonts-recommended \
+  texlive-generic-recommended \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 # Altair rendering requirements
 USER root
