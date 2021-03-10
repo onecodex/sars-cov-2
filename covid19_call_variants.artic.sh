@@ -72,6 +72,7 @@ pangolin sample.consensus.fasta --outfile pangolin.csv -t ${threads}
 
 source deactivate
 
+source activate notebook
 
 #### 6. Run generate_tsv.py
 python /usr/local/bin/generate_tsv.py sample
