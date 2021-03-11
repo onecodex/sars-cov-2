@@ -13,6 +13,7 @@ dependencies:
   - pango
   - samtools
   - seqtk
+  - seqkit
   - openjdk
   - bcftools
 
