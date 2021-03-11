@@ -141,13 +141,12 @@ def run_covid_pipeline(tmp_path):
     def _run_covid_pipeline(
         input_filename="nCoV-2019.reference_mutated_1.fasta",
     ):
-
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
-            "/repo/reference/nCoV-2019.reference.fasta",
+            "/share/nCoV-2019.reference.fasta",
             input_filename,
-            "/repo/reference/artic-v1/ARTIC-V1.bed",
+            "/share/ARTIC-V1.bed",
         ]
 
         run_docker_container(tmp_path, container_command)
