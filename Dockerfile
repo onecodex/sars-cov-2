@@ -70,3 +70,4 @@ ADD report.ipynb /
 ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gtf /
 ADD annot_table.orfs.txt /
+ADD ivar_variants_to_vcf.py /
