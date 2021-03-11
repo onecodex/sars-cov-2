@@ -77,6 +77,7 @@ def run_art(tmp_path):
                 "/pytest",
                 "covid19",
                 *(
+                    *("conda", "run", "-n", "report"),
                     "art_illumina",
                     "--paired",
                     *("--seqSys", system),
