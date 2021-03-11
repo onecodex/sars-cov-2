@@ -45,7 +45,7 @@ source deactivate
 
 #### 3. Variant annotation
 
-source activate pangolin
+source activate report
 
 # Replace the vcf chromosome name to the verison that snpEff will recognize (GenBank sequence NC_045512.2, which is identical to RefSeq MN908947.3)
 gunzip sample.pass.vcf.gz
