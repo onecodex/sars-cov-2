@@ -11,7 +11,7 @@ set -euo pipefail
 #### 4. Classify lineages
 
 # Assign NextClade clade
-conda run -n pangolin nextclade --input-fasta "${consensus_fasta}" --output-tsv nextclade.tsv
+conda run -n pangolin nextclade --input-fasta "${consensus_fasta}" --output-tsv nextclade.tsv --output-json nextclade.json
 
 # Assign Pango lineage
 conda run -n pangolin pangolin --update # being intensively updated

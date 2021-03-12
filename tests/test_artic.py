@@ -42,4 +42,5 @@ def test_ont_artic(tmp_path, run_artic_covid_pipeline):
 def test_post_process_variants(tmp_path, run_post_process_variants):
     run_post_process_variants("/repo/data/test-consensus.fa")
     assert os.path.exists(tmp_path / "nextclade.tsv")
+    assert os.path.exists(tmp_path / "nextclade.json")
     assert os.path.exists(tmp_path / "pangolin.csv")
