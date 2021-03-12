@@ -16,6 +16,7 @@ dependencies:
   - seqkit
   - openjdk
   - bcftools
+  - PyVCF
 
   - python=3.7
   - pip

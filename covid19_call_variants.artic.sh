@@ -22,9 +22,15 @@ set -e
 echo "[1] trimming/filtering reads with seqkit"
 source activate report
 
-cat ${1} | 
-  seqkit seq --min-len ${min_read_length} --max-len ${max_read_length} --min-qual ${min_read_quality} \
-  > "${prefix}.filtered.fastq"
+cat ${1} \
+  | seqkit \
+    seq \
+      --min-len ${min_read_length} \
+      --max-len ${max_read_length} \
+      --min-qual ${min_read_quality} \
+      --out-file "${prefix}.filtered.fastq"
+
+echo "total reads after filtering: $(wc -l ${prefix}.filtered.fastq)"
 
 source deactivate
 
