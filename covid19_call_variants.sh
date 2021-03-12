@@ -54,7 +54,6 @@ minimap2 \
     - \
   > "${prefix}.sorted.bam"
 
-rm "${reference}.trimmed.fa"
 
 # Trim with ivar
 echo "[2] Trimming with ivar"
@@ -91,6 +90,7 @@ samtools \
   --min-BQ 0 \
   "${prefix}.sorted.bam" \
   > "${prefix}.pileup"
+
 
 echo "[5] Generating variants TSV"
 ivar \

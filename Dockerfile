@@ -64,6 +64,7 @@ RUN npm install -g --unsafe-perm vega-lite vega-cli canvas
 
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
+ADD post_process_variants.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
 
 ADD report.ipynb /
