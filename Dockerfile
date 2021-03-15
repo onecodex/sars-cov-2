@@ -52,6 +52,9 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
 
+# install nextclade
+RUN npm install --global @neherlab/nextclade
+
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
