@@ -5,6 +5,8 @@
 # data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz
 # reference/artic-v1/ARTIC-V1.bed`
 
+source activate report
+
 set -eou pipefail
 
 # argv
@@ -25,26 +27,20 @@ echo "length_threshold=${length_threshold}"
 echo "threads=${threads}"
 echo "min_quality=${min_quality}"
 
-
-# detect if we have long or short reads to adjust minimap2 parameters
-mapping_mode=$(
-  head -n 400 "${input_fastq}" \
-    | awk \
-    -v "thresh=${length_threshold}" \
-    'NR % 4 == 2 {s+= length}END {if (s/(NR/4) > thresh) {print "map-ont"} else {print "sr"}}'
-)
-
-# Minimap2
-MINIMAP_OPTS="-K 20M -a -x ${mapping_mode} -t ${threads}"
-echo "[1] Running minimap with options: ${MINIMAP_OPTS}"
+# minimap2
 
 # Trim polyA tail for alignment (33 bases)
-seqtk trimfq -e 33 "${reference}" > "${reference}.trimmed.fa"
+seqtk trimfq -e 33 "${reference}" > trimmed-reference.fasta
 
 # shellcheck disable=SC2086
-minimap2 ${MINIMAP_OPTS} \
-  "${reference}.trimmed.fa" \
-  "${input_fastq}"  \
+echo "[1] mapping reads with minimap2"
+minimap2 \
+  -K 20M \
+  -a \
+  -x sr \
+  -t "${threads}" \
+  trimmed-reference.fasta \
+  "${input_fastq}" \
   | samtools \
     view \
     -u \
@@ -58,7 +54,6 @@ minimap2 ${MINIMAP_OPTS} \
     - \
   > "${prefix}.sorted.bam"
 
-rm "${reference}.trimmed.fa"
 
 # Trim with ivar
 echo "[2] Trimming with ivar"
@@ -96,12 +91,16 @@ samtools \
   "${prefix}.sorted.bam" \
   > "${prefix}.pileup"
 
+
 echo "[5] Generating variants TSV"
 ivar \
   variants \
   -p "${prefix}.ivar" \
   -t 0.6 \
   < "${prefix}.pileup"
+
+echo "[6] Generating VCF from TSV"
+python /ivar_variants_to_vcf.py "${prefix}.ivar.tsv" "${prefix}.vcf"
 
 # Generate consensus sequence with ivar
 echo "[6] Generating consensus sequence"
@@ -118,9 +117,9 @@ sed \
   < "${prefix}.ivar.fa" \
   > "${prefix}.consensus.fa"
 
-
 # Move some files around and clean up
 mv "${prefix}.consensus.fa" "consensus.fa"
+mv "${prefix}.vcf" "variants.vcf"
 mv "${prefix}.ivar.tsv" "variants.tsv"
 mv "${prefix}.sorted.bam" "covid19.bam"
 mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
