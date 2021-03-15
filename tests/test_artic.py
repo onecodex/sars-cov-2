@@ -1,7 +1,6 @@
-import pytest
+import os
 
 import pandas as pd
-import os
 
 
 def test_sra_illumina_artic(tmp_path, run_covid_pipeline):
@@ -15,7 +14,7 @@ def test_sra_illumina_artic(tmp_path, run_covid_pipeline):
     assert os.path.exists(tmp_path / "consensus.fa")
     assert os.path.exists(tmp_path / "variants.vcf")
     assert os.path.exists(tmp_path / "covid19.bam")
-    assert os.path.exists(tmp_path / "covid19.bam.fa")
+    assert os.path.exists(tmp_path / "covid19.bam.bai")
 
     # for backwards compatibility
     # need to rewrite notebook to not depend on this TSV (use nextclade output instead)
@@ -36,7 +35,7 @@ def test_ont_artic(tmp_path, run_artic_covid_pipeline):
     assert os.path.exists(tmp_path / "consensus.fa")
     assert os.path.exists(tmp_path / "variants.vcf")
     assert os.path.exists(tmp_path / "covid19.bam")
-    assert os.path.exists(tmp_path / "covid19.bam.fa")
+    assert os.path.exists(tmp_path / "covid19.bam.bai")
 
 
 def test_post_process_variants(tmp_path, run_post_process_variants):
