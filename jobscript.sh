@@ -32,9 +32,6 @@ conda run -n report samtools view -F 2308 covid19.bam | wc -l > total_mapped_rea
 echo "Assigning NextClade Clade"
 nextclade --input-fasta consensus.fa --output-tsv nextclade.tsv --output-json nextclade.json
 
-# Assign Pango lineage
-echo "Updating Pango Database"
-conda run -n pangolin pangolin --update # being intensively updated
 
 # TODO: copy pangolin database data somewhere.
 echo "Assigning Pango Lineage"

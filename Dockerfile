@@ -65,3 +65,6 @@ ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gtf /
 ADD annot_table.orfs.txt /
 ADD ivar_variants_to_vcf.py /
+
+# update pangolin database 2021-03-18
+RUN conda run -n pangolin pangolin --update
