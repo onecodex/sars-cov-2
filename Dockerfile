@@ -57,7 +57,7 @@ RUN npm install --global @neherlab/nextclade
 
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
-ADD post_process_variants.sh /usr/local/bin/
+ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
 
 ADD report.ipynb /
@@ -65,3 +65,6 @@ ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gtf /
 ADD annot_table.orfs.txt /
 ADD ivar_variants_to_vcf.py /
+
+# update pangolin database 2021-03-18
+RUN conda run -n pangolin pangolin --update
