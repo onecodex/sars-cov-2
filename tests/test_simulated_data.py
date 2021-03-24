@@ -3,21 +3,14 @@ import pandas as pd
 import pytest
 
 
-@pytest.mark.parametrize("n", [x for x in range(1, 10)])
-def test_snps_only_fasta(tmp_path, n, run_covid_pipeline, run_snp_mutator):
-    """Tests insert of N snps
-    """
-    run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=n)
-
-    # Run pipeline on simulated data
-    run_covid_pipeline()
-
-    # Check that all variants are detected and there are no extras
-    truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
-    called = pd.read_csv(open(tmp_path / "variants.tsv"), sep="\t")
-    assert all(truth["Position"] == called["POS"])
-    assert all(truth["OriginalBase"] == called["REF"])
-    assert all(truth["NewBase"] == called["ALT"])
+def read_vcf_as_dataframe(path):
+    return pd.read_csv(
+        path,
+        sep="\t",
+        comment="#",
+        names=["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"],
+        usecols=[0, 1, 2, 3, 4, 5, 6, 7],
+    )
 
 
 @pytest.mark.parametrize("n", [x for x in range(1, 10)])
@@ -34,7 +27,8 @@ def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutat
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
-    called = pd.read_csv(open(tmp_path / "variants.tsv"), sep="\t")
+    called = read_vcf_as_dataframe(tmp_path / "variants.vcf")
+
     assert all(truth["Position"] == called["POS"])
     assert all(truth["OriginalBase"] == called["REF"])
     assert all(truth["NewBase"] == called["ALT"])
@@ -42,8 +36,18 @@ def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutat
     # We add these tests to ensure we have a high percent of reads aligning
     # We simulate at 50x, so low end variants with coverage variability should
     # be ~25-30x, and then another ~33-50% due to Q scores <20
-    assert (called["ALT_DP"] > 10).all()
-    assert called["ALT_DP"].mean() > 15
+
+    # parse alt depth from VCF info column
+    alt_dp = []
+    for row in called["INFO"].values:
+        items = row.split(";")
+        for i in items:
+            if i.startswith("DP="):
+                alt_dp.append(int(i.split("=")[1]))
+
+    assert len(alt_dp) == called.shape[0]
+    assert all([i > 10 for i in alt_dp])
+    assert sum(alt_dp) / len(alt_dp) > 15
 
     # Finally, test that the FASTAs match
     # Note we ignore the first 50bp which may have low coverage and N masking
