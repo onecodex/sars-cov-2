@@ -6,6 +6,45 @@ import subprocess
 import pytest
 from snpmutator.script import run_from_args
 
+import pandas as pd
+
+
+@pytest.fixture
+def read_vcf_as_dataframe():
+    def _read_vcf_as_dataframe(path):
+        df = pd.read_csv(
+            path,
+            sep="\t",
+            comment="#",
+            names=["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"],
+            usecols=[0, 1, 2, 3, 4, 5, 6, 7],
+        )
+
+        # parse info add key/value items to data-frame
+        info_data = []
+        for row in df["INFO"].values:
+            items = [i.split("=") for i in row.split(";")]
+            parsed = {}
+            for item in items:
+                # boolean items. skip for now
+                if len(item) == 1:
+                    pass
+                elif len(item) == 2:
+                    parsed[item[0]] = item[1]
+                else:
+                    raise Exception(f"Item of unexpected length in vcf info column: {item}")
+            # parse depth column into ALT and REF depths
+            depths = [int(x) for x in parsed["DP4"].split(",")]
+            parsed["ALT_DP"] = sum(depths[2:])
+            parsed["REF_DP"] = sum(depths[:2])
+            info_data.append(parsed)
+
+        df = pd.DataFrame([{**r, **i} for r, i in zip(df.to_dict(orient="records"), info_data)])
+
+        return df
+
+    return _read_vcf_as_dataframe
+
 
 @pytest.fixture
 def run_snp_mutator(tmp_path):

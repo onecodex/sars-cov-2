@@ -3,20 +3,11 @@ import pandas as pd
 import pytest
 
 
-def read_vcf_as_dataframe(path):
-    return pd.read_csv(
-        path,
-        sep="\t",
-        comment="#",
-        names=["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"],
-        usecols=[0, 1, 2, 3, 4, 5, 6, 7],
-    )
-
-
-@pytest.mark.parametrize("n", [x for x in range(1, 10)])
-def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutator):
-    """Tests insert of N snps
-    """
+@pytest.mark.parametrize("n", [x for x in range(1, 2)])
+def test_snps_only_fastq(
+    tmp_path, n, run_art, run_covid_pipeline, run_snp_mutator, read_vcf_as_dataframe
+):
+    """Tests insert of N snps"""
     run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=n)
 
     # Run ART
@@ -36,18 +27,8 @@ def test_snps_only_fastq(tmp_path, n, run_art, run_covid_pipeline, run_snp_mutat
     # We add these tests to ensure we have a high percent of reads aligning
     # We simulate at 50x, so low end variants with coverage variability should
     # be ~25-30x, and then another ~33-50% due to Q scores <20
-
-    # parse alt depth from VCF info column
-    alt_dp = []
-    for row in called["INFO"].values:
-        items = row.split(";")
-        for i in items:
-            if i.startswith("DP="):
-                alt_dp.append(int(i.split("=")[1]))
-
-    assert len(alt_dp) == called.shape[0]
-    assert all([i > 10 for i in alt_dp])
-    assert sum(alt_dp) / len(alt_dp) > 15
+    assert (called["ALT_DP"] > 10).all()
+    assert called["ALT_DP"].mean() > 15
 
     # Finally, test that the FASTAs match
     # Note we ignore the first 50bp which may have low coverage and N masking
