@@ -88,6 +88,7 @@ bcftools \
   --min-BQ 0 \
   "${prefix}.sorted.bam" \
   | bcftools call \
+    --variants-only \
     --multiallelic-caller \
     --output-type z \
     --output "${prefix}.vcf.gz"
