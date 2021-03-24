@@ -15,7 +15,7 @@ set -eou pipefail
 : "${primer_bed_file:=${3}}"
 
 # defaults
-: "${length_threshold:=600}" # max length to be considered "short read" sequencing
+
 : "${threads:=4}"
 : "${prefix:=results}"
 : "${min_quality:=20}"
@@ -23,7 +23,6 @@ set -eou pipefail
 echo "reference=${reference}"
 echo "input_fastq=${input_fastq}"
 echo "primer_bed_file=${primer_bed_file}"
-echo "length_threshold=${length_threshold}"
 echo "threads=${threads}"
 echo "min_quality=${min_quality}"
 
@@ -54,7 +53,6 @@ minimap2 \
     - \
   > "${prefix}.sorted.bam"
 
-
 # Trim with ivar
 echo "[2] Trimming with ivar"
 samtools index "${prefix}.sorted.bam"
@@ -69,7 +67,6 @@ ivar \
   -p "${prefix}.ivar"
 
 echo "[3] Sorting and indexing trimmed BAM"
-
 samtools \
   sort \
   -@ "${threads}" \
@@ -81,46 +78,36 @@ samtools \
   "${prefix}.sorted.bam"
 
 echo "[4] Generating pileup"
-samtools \
+bcftools \
   mpileup \
+  --annotate FORMAT/AD,INFO/AD \
   --fasta-ref "${reference}" \
   --max-depth 0 \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
   "${prefix}.sorted.bam" \
-  > "${prefix}.pileup"
+  | bcftools call \
+    --multiallelic-caller \
+    --output-type z \
+    --output "${prefix}.vcf.gz"
 
+# bcftools index requires a .vcf.gz file
+# in the special indexed gzip format (can't use regular gzip)
+bcftools index "${prefix}.vcf.gz"
 
-echo "[5] Generating variants TSV"
-ivar \
-  variants \
-  -p "${prefix}.ivar" \
-  -t 0.6 \
-  < "${prefix}.pileup"
+bcftools consensus \
+  --fasta-ref "${reference}" \
+  "${prefix}.vcf.gz" \
+  | sed \
+    '/>/ s/$/ | One Codex consensus sequence/' \
+    > "${prefix}.consensus.fa"
 
-echo "[6] Generating VCF from TSV"
-python /ivar_variants_to_vcf.py "${prefix}.ivar.tsv" "${prefix}.vcf"
-
-# Generate consensus sequence with ivar
-echo "[6] Generating consensus sequence"
-ivar \
-  consensus \
-  -p "${prefix}".ivar \
-  -m 1 \
-  -t 0.6 \
-  -n N \
-  < "${prefix}.pileup"
-
-sed \
-  '/>/ s/$/ | One Codex consensus sequence/' \
-  < "${prefix}.ivar.fa" \
-  > "${prefix}.consensus.fa"
+zcat "${prefix}.vcf.gz" > "${prefix}.vcf"
 
 # Move some files around and clean up
 mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.vcf" "variants.vcf"
-mv "${prefix}.ivar.tsv" "variants.tsv"
 mv "${prefix}.sorted.bam" "covid19.bam"
 mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
 rm "${prefix}"*
