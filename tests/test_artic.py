@@ -22,8 +22,6 @@ def test_sra_illumina_artic(tmp_path, run_covid_pipeline, read_vcf_as_dataframe)
 
     truth = pd.read_csv("data/ARTIC/SRR11314339.ARTICv1.100k.truth.tsv", sep="\t")
 
-    called = called[called["QUAL"] > 150].reset_index()
-
     # Subset to depth >= 10 and then compare
     assert all(truth["Position"] == called["POS"])
     assert all(truth["OriginalBase"] == called["REF"])

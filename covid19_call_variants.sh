@@ -5,7 +5,7 @@
 # data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz
 # reference/artic-v1/ARTIC-V1.bed`
 
-source activate report
+source activate report # noqa
 
 set -eou pipefail
 
@@ -91,7 +91,15 @@ bcftools \
     --variants-only \
     --multiallelic-caller \
     --output-type z \
-    --output "${prefix}.vcf.gz"
+    --output "${prefix}.raw.vcf.gz"
+
+
+# filter out low-quality variants
+bcftools view \
+  --exclude "QUAL<150" \
+  --output-type z \
+  < "${prefix}.raw.vcf.gz" \
+  > "${prefix}.vcf.gz"
 
 # bcftools index requires a .vcf.gz file
 # in the special indexed gzip format (can't use regular gzip)
