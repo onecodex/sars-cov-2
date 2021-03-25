@@ -22,7 +22,8 @@ def test_sra_illumina_artic(tmp_path, run_covid_pipeline, read_vcf_as_dataframe)
 
     truth = pd.read_csv("data/ARTIC/SRR11314339.ARTICv1.100k.truth.tsv", sep="\t")
 
-    called = called[called["ALT_DP"] >= 10].reset_index()
+    called = called[called["QUAL"] > 150].reset_index()
+
     # Subset to depth >= 10 and then compare
     assert all(truth["Position"] == called["POS"])
     assert all(truth["OriginalBase"] == called["REF"])
@@ -36,10 +37,3 @@ def test_ont_artic(tmp_path, run_artic_covid_pipeline, read_vcf_as_dataframe):
     assert os.path.exists(tmp_path / "variants.vcf")
     assert os.path.exists(tmp_path / "covid19.bam")
     assert os.path.exists(tmp_path / "covid19.bam.bai")
-
-
-def test_post_process_variants(tmp_path, run_post_process_variants):
-    run_post_process_variants("/repo/data/test-consensus.fa")
-    assert os.path.exists(tmp_path / "nextclade.tsv")
-    assert os.path.exists(tmp_path / "nextclade.json")
-    assert os.path.exists(tmp_path / "pangolin.csv")
