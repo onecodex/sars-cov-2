@@ -183,13 +183,13 @@ def run_post_process_variants(tmp_path):
 
 @pytest.fixture
 def run_covid_pipeline(tmp_path):
-    def _run_covid_pipeline(input_filename="nCoV-2019.reference_mutated_1.fasta",):
+    def _run_covid_pipeline(input_filename="nCoV-2019.reference_mutated_1.fasta"):
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
             "/share/nCoV-2019.reference.fasta",
             input_filename,
-            "/share/ARTIC-V3/ARTIC-V3.bed",
+            "/share/ARTIC-V3.bed",
         ]
 
         run_docker_container(tmp_path, container_command)
