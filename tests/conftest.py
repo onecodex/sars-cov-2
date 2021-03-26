@@ -1,10 +1,50 @@
 # Helper functions for running the Docker pipeline and snp-mutator
 from argparse import Namespace
+import gzip
 import os
+import shutil
 import subprocess
 
+import pandas as pd
 import pytest
 from snpmutator.script import run_from_args
+
+
+@pytest.fixture
+def read_vcf_as_dataframe():
+    def _read_vcf_as_dataframe(path):
+        df = pd.read_csv(
+            path,
+            sep="\t",
+            comment="#",
+            names=["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"],
+            usecols=[0, 1, 2, 3, 4, 5, 6, 7],
+        )
+
+        # parse info add key/value items to data-frame
+        info_data = []
+        for row in df["INFO"].values:
+            items = [i.split("=") for i in row.split(";")]
+            parsed = {}
+            for item in items:
+                # boolean items. skip for now
+                if len(item) == 1:
+                    pass
+                elif len(item) == 2:
+                    parsed[item[0]] = item[1]
+                else:
+                    raise Exception(f"Item of unexpected length in vcf info column: {item}")
+            # parse depth column into ALT and REF depths
+            depths = [int(x) for x in parsed["DP4"].split(",")]
+            parsed["ALT_DP"] = sum(depths[2:])
+            parsed["REF_DP"] = sum(depths[:2])
+            info_data.append(parsed)
+
+        df = pd.DataFrame([{**r, **i} for r, i in zip(df.to_dict(orient="records"), info_data)])
+
+        return df
+
+    return _read_vcf_as_dataframe
 
 
 @pytest.fixture
@@ -44,7 +84,7 @@ def _generate_snp_mutator_args(
 
 def _interleave_fastqs(r1, r2, output_filename):
     """Helper function to interleave ART outputs for minimap2"""
-    with open(r1) as f1, open(r2) as f2, open(output_filename, "w") as fout:
+    with open(r1) as f1, open(r2) as f2, gzip.open(output_filename, "wt") as fout:
         while True:
             line = f1.readline()
             if line.strip() == "":
@@ -94,7 +134,7 @@ def run_art(tmp_path):
         _interleave_fastqs(
             f"{tmp_path}/simulated_reads_1.fq",
             f"{tmp_path}/simulated_reads_2.fq",
-            f"{tmp_path}/simulated_reads.fq",
+            f"{tmp_path}/simulated_reads.fastq.gz",
         )
 
     return _run_art
@@ -113,10 +153,7 @@ def run_docker_container(tmp_path, container_command):
         *container_command,
     ]
 
-    result = subprocess.run(
-        command,
-        capture_output=True,
-    )
+    result = subprocess.run(command, capture_output=True)
 
     if result.returncode != 0:
         raise Exception(
@@ -147,32 +184,57 @@ def run_post_process_variants(tmp_path):
 
 
 @pytest.fixture
-def run_covid_pipeline(tmp_path):
-    def _run_covid_pipeline(
-        input_filename="nCoV-2019.reference_mutated_1.fasta",
-    ):
+def run_jobscript(tmp_path):
+    def _run_jobscript(input_filename):
+        container_command = ["/bin/bash", "/repo/jobscript.sh", input_filename]
+        run_docker_container(tmp_path, container_command)
+
+    return _run_jobscript
+
+
+@pytest.fixture
+def run_call_variants_illumina(tmp_path):
+    def _run_call_variants_illumina(input_filename="nCoV-2019.reference_mutated_1.fasta"):
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
             "/share/nCoV-2019.reference.fasta",
             input_filename,
-            "/share/ARTIC-V1.bed",
+            "/share/ARTIC-V3.bed",
         ]
 
         run_docker_container(tmp_path, container_command)
 
-    return _run_covid_pipeline
+    return _run_call_variants_illumina
 
 
 @pytest.fixture
-def run_artic_covid_pipeline(tmp_path):
-    def _run_artic_covid_pipeline(input_filename):
-        container_command = [
-            "/bin/bash",
-            "/repo/covid19_call_variants.artic.sh",
-            input_filename,
-        ]
+def run_call_variants_ont(tmp_path):
+    def _run_call_variants_ont(input_filename):
+        container_command = ["/bin/bash", "/repo/covid19_call_variants.artic.sh", input_filename]
 
         run_docker_container(tmp_path, container_command)
 
-    return _run_artic_covid_pipeline
+    return _run_call_variants_ont
+
+
+@pytest.fixture
+def run_render_notebook(tmp_path):
+    def _run_render_notebook():
+        # notebook must exist in tmp_path because file paths are relative to
+        # the notebook
+        shutil.copy("report.ipynb", tmp_path / "report.ipynb")
+        container_command = [
+            *("conda", "run", "-n", "report"),
+            "jupyter",
+            "nbconvert",
+            "--execute",
+            "--to=onecodex_pdf",
+            "--ExecutePreprocessor.timeout=-1",
+            "--output='test.pdf'",
+            "--output-dir='.'",
+            "report.ipynb",
+        ]
+        run_docker_container(tmp_path, container_command)
+
+    return _run_render_notebook

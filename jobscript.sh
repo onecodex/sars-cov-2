@@ -1,4 +1,4 @@
-#1/bin/bash
+#!/bin/bash
 
 set -euo pipefail
 
@@ -26,16 +26,11 @@ conda run -n report \
 # Count total mapped reads (can we get this from summing snps.depth)
 conda run -n report samtools view -F 2308 covid19.bam | wc -l > total_mapped_reads.txt
 
-# call strains
-
-# Assign NextClade clade
-echo "Assigning NextClade Clade"
-nextclade --input-fasta consensus.fa --output-tsv nextclade.tsv --output-json nextclade.json
-
-
-# TODO: copy pangolin database data somewhere.
-echo "Assigning Pango Lineage"
-conda run -n pangolin pangolin consensus.fa --outfile pangolin.csv -t "${THREADS}"
+# call strains, generates:
+# nextclade.tsv
+# nextclade.json
+# pangolin.csv
+post_process_variants.sh consensus.fa
 
 # render notebook
 
