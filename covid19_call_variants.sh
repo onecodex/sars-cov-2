@@ -5,6 +5,7 @@
 # data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz
 # reference/artic-v1/ARTIC-V1.bed`
 
+# shellcheck disable=SC1091
 source activate report # noqa
 
 set -eou pipefail

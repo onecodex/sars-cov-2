@@ -20,9 +20,11 @@ set -e
 #### 1. Length and quality filtering
 
 echo "[1] trimming/filtering reads with seqkit"
+# shellcheck disable=SC1091
 source activate report
 
-cat ${1} \
+# shellcheck disable=SC2002
+cat "${1}" \
   | seqkit \
     seq \
       --min-len ${min_read_length} \
@@ -32,6 +34,7 @@ cat ${1} \
 
 echo "total reads after filtering: $(wc -l ${prefix}.filtered.fastq)"
 
+# shellcheck disable=SC1091
 source deactivate
 
 #### 2. Alignment, variant calling, and consensus creation
@@ -66,6 +69,5 @@ mv "${prefix}.sorted.bam.bai" covid19.bam.bai
 rm -rf "${prefix}.*"
 
 ##### 6. Run generate_tsv.py
-#conda run -n report python /usr/local/bin/generate_tsv.py sample
 
 echo "[ ] finished!"
