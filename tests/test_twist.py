@@ -14,7 +14,7 @@ def test_twist_truth_data(tmp_path, run_call_variants_illumina, read_vcf_as_data
 
     # Subset to depth >= 10 and then compare
     # lost last variant because depth went down. differences in filtering/mapping?
-    called = called[called["ALT_DP"] >= 10].reset_index()
-    assert all(truth["Position"] == called["POS"])
-    assert all(truth["OriginalBase"] == called["REF"])
-    assert all(truth["NewBase"] == called["ALT"])
+    called = called[called["ALT_DP"] >= 10]
+    assert all(truth["Position"].values == called["POS"].values)
+    assert all(truth["OriginalBase"].values == called["REF"].values)
+    assert all(truth["NewBase"].values == called["ALT"].values)
