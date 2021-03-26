@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-def test_twist_truth_data(tmp_path, run_covid_pipeline, read_vcf_as_dataframe):
+def test_twist_truth_data(tmp_path, run_call_variants_illumina, read_vcf_as_dataframe):
     """Tests insert of N snps"""
     # Run pipeline on simulated data
-    run_covid_pipeline(
+    run_call_variants_illumina(
         input_filename=(
             "/repo/data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz"
         )
