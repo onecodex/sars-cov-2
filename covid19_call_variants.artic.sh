@@ -15,14 +15,17 @@ set -e
 : "${min_read_quality:=7}" # Filters out all reads below a quality of 7
 : "${normalized_coverage:=200}" # Normalize to coverage of 200x to reduce runtime
 : "${threads:=6}" # Number of threads for running the minimap2/medaka pipeline
+# shellcheck disable=SC2154
 : "${prefix=report}"
 
 #### 1. Length and quality filtering
 
 echo "[1] trimming/filtering reads with seqkit"
+# shellcheck disable=SC1091
 source activate report
 
-cat ${1} \
+# shellcheck disable=SC2002
+cat "${1}" \
   | seqkit \
     seq \
       --min-len ${min_read_length} \
@@ -30,8 +33,10 @@ cat ${1} \
       --min-qual ${min_read_quality} \
       --out-file "${prefix}.filtered.fastq"
 
+# shellcheck disable=SC2086
 echo "total reads after filtering: $(wc -l ${prefix}.filtered.fastq)"
 
+# shellcheck disable=SC1091
 source deactivate
 
 #### 2. Alignment, variant calling, and consensus creation
@@ -66,6 +71,5 @@ mv "${prefix}.sorted.bam.bai" covid19.bam.bai
 rm -rf "${prefix}.*"
 
 ##### 6. Run generate_tsv.py
-#conda run -n report python /usr/local/bin/generate_tsv.py sample
 
 echo "[ ] finished!"
