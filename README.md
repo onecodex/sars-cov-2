@@ -2,20 +2,9 @@
 
 [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/test/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/pre-commit/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Docker Repository on Quay](https://quay.io/repository/refgenomics/covid19/status "Docker Repository on Quay")](https://quay.io/repository/refgenomics/covid19)
 
-
-SARS-CoV-2 variant calling and consensus assembly pipeline using [ivar](https://github.com/andersen-lab/ivar) and [minimap2](https://github.com/lh3/minimap2).
-
-⚠️ **As of April 1st, this pipeline support ARTIC v1 primers, capture-based approaches, and RNA-seq _on Illumina platforms_. We expect to add ONT support in the coming days, but recommend looking at the [ARTIC Network protocol](https://artic.network/ncov-2019) in the meantime.**
+SARS-CoV-2 variant calling and consensus assembly pipeline for ARTIC v3 amplicons sequenced on Illumina or Oxford Nanopore platforms
 
 # Quick start
-
-This repo includes a number of compressed FASTQ and other files for use as "golden output" test data. In order to access this data, you'll need to have `git lfs` installed (`git-lfs` can be installed via `brew install git-lfs` on Mac OS):
-
-```sh
-git lfs install
-```
-
-You can then build the Docker image as follows:
 
 ```sh
 docker build -t covid19 .
@@ -33,14 +22,34 @@ docker \
   --env prefix=test-covid19 \
   --env reference=reference/nCoV-2019.reference.fasta \
   --env input_fastq=data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
-  --env primer_bed_file=reference/artic-v1/ARTIC-V1.bed \
+  --env primer_bed_file=reference/artic-v1/ARTIC-V3.bed \
   covid19 \
-  covid19_call_variants.sh
+  jobscript.sh
 ```
 
-This currently produces a `consensus.fa` file, a `variants.tsv`, and a BAM file (`covid19.bam`).
+For Oxford Nanopore:
+
+```sh
+docker \
+  run \
+  --rm \
+  --workdir /data \
+  --volume `pwd`:/data \
+  --entrypoint /bin/bash \
+  --env prefix=test-covid19 \
+  --env SEQUENCING_PLATFORM="Oxford Nanopore" \
+  --env reference=reference/nCoV-2019.reference.fasta \
+  --env input_fastq=data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
+  --env primer_bed_file=reference/artic-v1/ARTIC-V3.bed \
+  covid19 \
+  jobscript.sh
+```
+
+This currently produces a `consensus.fa` file, a `variants.vcf`, a BAM file (`covid19.bam`), nextstrain results (`nextstrain.json`) and pangolin results (`pangolin.csv`).
 
 # Development & Testing
+
+To run tests, run `pytest`.
 
 This repository includes a local `requirements.txt` file for quickly running some golden output tests across a variety of datasets. This repository is set up to use Github Actions to automatically build the Docker image and run those tests to ensure there are no regressions. These ensure that parameter and pipeline changes don't affect variant calls or consensus sequence generation.
 
