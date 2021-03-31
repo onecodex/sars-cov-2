@@ -5,6 +5,9 @@
 # data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz
 # reference/artic-v1/ARTIC-V1.bed`
 
+# shellcheck disable=SC1091
+source activate report # noqa
+
 set -eou pipefail
 
 # argv
@@ -13,7 +16,7 @@ set -eou pipefail
 : "${primer_bed_file:=${3}}"
 
 # defaults
-: "${length_threshold:=600}" # max length to be considered "short read" sequencing
+
 : "${threads:=4}"
 : "${prefix:=results}"
 : "${min_quality:=20}"
@@ -21,30 +24,23 @@ set -eou pipefail
 echo "reference=${reference}"
 echo "input_fastq=${input_fastq}"
 echo "primer_bed_file=${primer_bed_file}"
-echo "length_threshold=${length_threshold}"
 echo "threads=${threads}"
 echo "min_quality=${min_quality}"
 
-
-# detect if we have long or short reads to adjust minimap2 parameters
-mapping_mode=$(
-  head -n 400 "${input_fastq}" \
-    | awk \
-    -v "thresh=${length_threshold}" \
-    'NR % 4 == 2 {s+= length}END {if (s/(NR/4) > thresh) {print "map-ont"} else {print "sr"}}'
-)
-
-# Minimap2
-MINIMAP_OPTS="-K 20M -a -x ${mapping_mode} -t ${threads}"
-echo "[1] Running minimap with options: ${MINIMAP_OPTS}"
+# minimap2
 
 # Trim polyA tail for alignment (33 bases)
-seqtk trimfq -e 33 "${reference}" > "${reference}.trimmed.fa"
+seqtk trimfq -e 33 "${reference}" > trimmed-reference.fasta
 
 # shellcheck disable=SC2086
-minimap2 ${MINIMAP_OPTS} \
-  "${reference}.trimmed.fa" \
-  "${input_fastq}"  \
+echo "[1] mapping reads with minimap2"
+minimap2 \
+  -K 20M \
+  -a \
+  -x sr \
+  -t "${threads}" \
+  trimmed-reference.fasta \
+  "${input_fastq}" \
   | samtools \
     view \
     -u \
@@ -57,8 +53,6 @@ minimap2 ${MINIMAP_OPTS} \
     --threads "${threads}" \
     - \
   > "${prefix}.sorted.bam"
-
-rm "${reference}.trimmed.fa"
 
 # Trim with ivar
 echo "[2] Trimming with ivar"
@@ -74,7 +68,6 @@ ivar \
   -p "${prefix}.ivar"
 
 echo "[3] Sorting and indexing trimmed BAM"
-
 samtools \
   sort \
   -@ "${threads}" \
@@ -86,42 +79,45 @@ samtools \
   "${prefix}.sorted.bam"
 
 echo "[4] Generating pileup"
-samtools \
+bcftools \
   mpileup \
+  --annotate FORMAT/AD,INFO/AD \
   --fasta-ref "${reference}" \
   --max-depth 0 \
   --count-orphans \
   --no-BAQ \
   --min-BQ 0 \
   "${prefix}.sorted.bam" \
-  > "${prefix}.pileup"
+  | bcftools call \
+    --variants-only \
+    --multiallelic-caller \
+    --output-type z \
+    --output "${prefix}.raw.vcf.gz"
 
-echo "[5] Generating variants TSV"
-ivar \
-  variants \
-  -p "${prefix}.ivar" \
-  -t 0.6 \
-  < "${prefix}.pileup"
 
-# Generate consensus sequence with ivar
-echo "[6] Generating consensus sequence"
-ivar \
-  consensus \
-  -p "${prefix}".ivar \
-  -m 1 \
-  -t 0.6 \
-  -n N \
-  < "${prefix}.pileup"
+# filter out low-quality variants
+bcftools view \
+  --exclude "QUAL<150" \
+  --output-type z \
+  < "${prefix}.raw.vcf.gz" \
+  > "${prefix}.vcf.gz"
 
-sed \
-  '/>/ s/$/ | One Codex consensus sequence/' \
-  < "${prefix}.ivar.fa" \
-  > "${prefix}.consensus.fa"
+# bcftools index requires a .vcf.gz file
+# in the special indexed gzip format (can't use regular gzip)
+bcftools index "${prefix}.vcf.gz"
 
+bcftools consensus \
+  --fasta-ref "${reference}" \
+  "${prefix}.vcf.gz" \
+  | sed \
+    '/>/ s/$/ | One Codex consensus sequence/' \
+    > "${prefix}.consensus.fa"
+
+zcat "${prefix}.vcf.gz" > "${prefix}.vcf"
 
 # Move some files around and clean up
 mv "${prefix}.consensus.fa" "consensus.fa"
-mv "${prefix}.ivar.tsv" "variants.tsv"
+mv "${prefix}.vcf" "variants.vcf"
 mv "${prefix}.sorted.bam" "covid19.bam"
 mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
 rm "${prefix}"*

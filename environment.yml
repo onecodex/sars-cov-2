@@ -1,18 +1,15 @@
-name: covid-19
+name: report
+
 channels:
   - conda-forge
   - bioconda
   - defaults
+
 dependencies:
-  - python=3.7
-  - ivar=1.0.1
-  - samtools=1.9
-  - minimap2=2.17
-  - seqtk=1.3
   - art=2016.06.05
-  - pango
-  - cairo
-  - weasyprint
-  - pip
-  - pip:
-    - biopython
+  - ivar
+  - minimap2
+  - samtools
+  - seqtk
+  - seqkit
+  - bcftools
