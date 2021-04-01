@@ -4,8 +4,8 @@ set -euo pipefail
 
 sample_filename="${1}"
 
-: ${INSTRUMENT_VENDOR:="Illumina"}
-: ${ONE_CODEX_REPORT_FILENAME:="report.pdf"}
+: "${INSTRUMENT_VENDOR:=Illumina}"
+: "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
@@ -66,4 +66,3 @@ SAMPLE_PATH="${sample_filename}" \
       report.ipynb
 
 echo "Finished!"
-
