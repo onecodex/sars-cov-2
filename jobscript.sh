@@ -2,20 +2,25 @@
 
 set -euo pipefail
 
-: "${THREADS=4}"
-: "${ONE_CODEX_REPORT_FILENAME='report.pdf'}"
-
 sample_filename="${1}"
-instrument_vendor="Oxford Nanopore"
+
+: "${INSTRUMENT_VENDOR:=Illumina}"
+: "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
+
+echo "--- sample_filename=${sample_filename}"
+echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 
 # generates the following files:
 # variants.vcf
 # covid19.bam (sorted+bai)
 # consensus.fa
-if [ "${instrument_vendor}" == "Oxford Nanopore" ]; then
+if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
   covid19_call_variants.artic.sh "${sample_filename}"
 else
-  covid19_call_variants.sh "${sample_filename}"
+  covid19_call_variants.sh \
+    /share/nCoV-2019.reference.fasta \
+    "${sample_filename}" \
+    /share/ARTIC-V3.bed
 fi
 
 # needed by report
@@ -26,17 +31,31 @@ conda run -n report \
 # Count total mapped reads (can we get this from summing snps.depth)
 conda run -n report samtools view -F 2308 covid19.bam | wc -l > total_mapped_reads.txt
 
-# call strains, generates:
-# nextclade.tsv
-# nextclade.json
-# pangolin.csv
-post_process_variants.sh consensus.fa
+# call strains
+
+# Assign NextClade clade
+echo "Assigning NextClade Clade"
+nextclade --input-fasta consensus.fa --output-tsv nextclade.tsv --output-json nextclade.json
+
+# Assign Pango lineage
+echo "Updating Pango Database"
+#conda run -n pangolin pangolin --update # being intensively updated
+
+# TODO: copy pangolin database data somewhere.
+echo "Assigning Pango Lineage"
+conda run -n pangolin pangolin consensus.fa --outfile pangolin.csv
+
+ls -lash /
 
 # render notebook
+cp /report.ipynb .
+cp /annot_table.orfs.txt .
+cp /share/low_complexity_regions.txt .
 
 echo "Generating notebook!"
 
 RESULTS_DIR="$(pwd)" \
+SAMPLE_PATH="${sample_filename}" \
   conda run -n report jupyter \
       nbconvert \
       --execute \
@@ -44,6 +63,6 @@ RESULTS_DIR="$(pwd)" \
       --ExecutePreprocessor.timeout=-1 \
       --output="${ONE_CODEX_REPORT_FILENAME}" \
       --output-dir="." \
-      /repo/report.ipynb
+      report.ipynb
 
 echo "Finished!"

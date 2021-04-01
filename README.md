@@ -37,7 +37,7 @@ docker \
   --volume `pwd`:/data \
   --entrypoint /bin/bash \
   --env prefix=test-covid19 \
-  --env SEQUENCING_PLATFORM="Oxford Nanopore" \
+  --env INSTRUMENT_VENDOR="Oxford Nanopore" \
   --env reference=reference/nCoV-2019.reference.fasta \
   --env input_fastq=data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
   --env primer_bed_file=reference/artic-v1/ARTIC-V3.bed \

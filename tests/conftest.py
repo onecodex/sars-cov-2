@@ -140,7 +140,10 @@ def run_art(tmp_path):
     return _run_art
 
 
-def run_docker_container(tmp_path, container_command):
+def run_docker_container(tmp_path, container_command, env=None):
+    if env is None:
+        env = {}
+
     command = [
         "docker",
         "run",
@@ -149,6 +152,7 @@ def run_docker_container(tmp_path, container_command):
         *("--volume", f"{tmp_path}:/pytest"),
         *("--volume", f"{os.getcwd()}/reference/:/share"),
         *("--workdir", "/pytest"),
+        *[i for r in [("--env", f"{k}={v}") for k, v in env.items()] for i in r],
         "covid19",
         *container_command,
     ]
@@ -185,16 +189,19 @@ def run_post_process_variants(tmp_path):
 
 @pytest.fixture
 def run_jobscript(tmp_path):
-    def _run_jobscript(input_filename):
+    def _run_jobscript(input_filename, instrument_vendor="Illumina"):
         container_command = ["/bin/bash", "/repo/jobscript.sh", input_filename]
-        run_docker_container(tmp_path, container_command)
+
+        run_docker_container(
+            tmp_path, container_command, env={"INSTRUMENT_VENDOR": instrument_vendor}
+        )
 
     return _run_jobscript
 
 
 @pytest.fixture
 def run_call_variants_illumina(tmp_path):
-    def _run_call_variants_illumina(input_filename="nCoV-2019.reference_mutated_1.fasta"):
+    def _run_call_variants_illumina(input_filename="nCoV-2019.reference_mutated_1.fasta",):
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
