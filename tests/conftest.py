@@ -74,6 +74,8 @@ def _generate_snp_mutator_args(
         # Hard-coded
         fasta_output_dir=tmp_path,
         num_sims=1,
+        num_insertions=num_insertions,
+        num_deletions=num_deletions,
         vcf_file=tmp_path / "variants.vcf",
         summary_file=tmp_path / "summary.tsv",
         # Passed

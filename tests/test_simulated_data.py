@@ -5,16 +5,21 @@ import pytest
 
 @pytest.mark.parametrize("n", [x for x in range(1, 2)])
 def test_snps_only_fastq(
-    tmp_path, n, run_art, run_call_variants_illumina, run_snp_mutator, read_vcf_as_dataframe
+    tmp_path, n, run_art, run_jobscript, run_snp_mutator, read_vcf_as_dataframe
 ):
     """Tests insert of N snps"""
-    run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=n)
+    run_snp_mutator(
+        input_fasta_file="reference/nCoV-2019.reference.fasta",
+        num_subs=n,
+        num_insertions=3,
+        num_deletions=3,
+    )
 
     # Run ART
     run_art()
 
     # Run pipeline on simulated data
-    run_call_variants_illumina(input_filename="simulated_reads.fastq.gz")
+    run_jobscript(input_filename="simulated_reads.fastq.gz")
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
