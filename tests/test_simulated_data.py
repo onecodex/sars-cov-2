@@ -8,7 +8,12 @@ def test_snps_only_fastq(
     tmp_path, n, run_art, run_call_variants_illumina, run_snp_mutator, read_vcf_as_dataframe
 ):
     """Tests insert of N snps"""
-    run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=n)
+    run_snp_mutator(
+        input_fasta_file="reference/nCoV-2019.reference.fasta",
+        num_subs=n,
+        num_insertions=3,
+        num_deletions=3,
+    )
 
     # Run ART
     run_art()
