@@ -11,8 +11,8 @@ def test_snps_only_fastq(
     run_snp_mutator(
         input_fasta_file="reference/nCoV-2019.reference.fasta",
         num_subs=n,
-        num_insertions=3,
-        num_deletions=3,
+        num_insertions=0,
+        num_deletions=0,
     )
 
     # Run ART
