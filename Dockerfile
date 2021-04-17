@@ -68,3 +68,5 @@ ADD annot_table.orfs.txt /
 
 # update pangolin database 2021-03-18
 RUN conda run -n pangolin pangolin --update
+
+RUN pip install dnaplotlib
