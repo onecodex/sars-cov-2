@@ -1,6 +1,6 @@
 # SARS-CoV-2
 
-Version v0.2.1
+Version v0.3.0
 
 [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/test/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/pre-commit/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Docker Repository on Quay](https://quay.io/repository/refgenomics/covid19/status "Docker Repository on Quay")](https://quay.io/repository/refgenomics/covid19)
 
