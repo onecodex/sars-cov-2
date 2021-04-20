@@ -7,14 +7,10 @@ RUN pip install numpy
 
 RUN pip install pysam==0.16 biopython==1.78 PyVCF
 
-RUN pip install onecodex[all,reports]==v0.9.4
-
-RUN mkdir -p /usr/local/share/fonts \
-    && cp /usr/local/lib/python3.8/site-packages/onecodex/assets/fonts/*.otf /usr/local/share/fonts \
-    && fc-cache
 
 USER root
 RUN apt-get update \
+    && apt-get autoclean \
     && apt-get install -y gnupg \
     && curl -sL https://deb.nodesource.com/setup_14.x  | bash - \
     && apt-get install -y nodejs \
@@ -55,6 +51,21 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
 # install nextclade
 RUN npm install --global @neherlab/nextclade
 
+
+# update pangolin database 2021-03-18
+RUN conda run -n pangolin pangolin --update
+
+# install dnaplotlib for creating the genome diagram
+RUN pip install dnaplotlib
+
+RUN pip install nbconvert==6.0.7
+
+# Install onecodex_pdf export option
+RUN pip install onecodex[all,reports]==v0.9.4
+RUN mkdir -p /usr/local/share/fonts \
+    && cp /usr/local/lib/python3.8/site-packages/onecodex/assets/fonts/*.otf /usr/local/share/fonts \
+    && fc-cache
+
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
@@ -65,6 +76,3 @@ ADD report.ipynb /
 ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gtf /
 ADD annot_table.orfs.txt /
-
-# update pangolin database 2021-03-18
-RUN conda run -n pangolin pangolin --update

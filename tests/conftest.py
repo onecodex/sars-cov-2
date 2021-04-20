@@ -201,7 +201,9 @@ def run_jobscript(tmp_path):
 
 @pytest.fixture
 def run_call_variants_illumina(tmp_path):
-    def _run_call_variants_illumina(input_filename="nCoV-2019.reference_mutated_1.fasta",):
+    def _run_call_variants_illumina(
+        input_filename="nCoV-2019.reference_mutated_1.fasta",
+    ):
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",

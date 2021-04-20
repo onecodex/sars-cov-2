@@ -56,7 +56,8 @@ echo "Generating notebook!"
 
 RESULTS_DIR="$(pwd)" \
 SAMPLE_PATH="${sample_filename}" \
-  conda run -n report jupyter \
+PYTHONWARNINGS="ignore" \
+conda run -n report jupyter \
       nbconvert \
       --execute \
       --to onecodex_pdf \
