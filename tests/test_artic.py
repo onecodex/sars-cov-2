@@ -26,12 +26,3 @@ def test_sra_illumina_artic(tmp_path, run_call_variants_illumina, read_vcf_as_da
     assert all(truth["Position"] == called["POS"])
     assert all(truth["OriginalBase"] == called["REF"])
     assert all(truth["NewBase"] == called["ALT"])
-
-
-def test_ont_artic(tmp_path, run_call_variants_ont, read_vcf_as_dataframe):
-    run_call_variants_ont(input_filename="/repo/data/ARTIC/RT-1212.barcode04.21_02_25.fastq.gz")
-
-    assert os.path.exists(tmp_path / "consensus.fa")
-    assert os.path.exists(tmp_path / "variants.vcf")
-    assert os.path.exists(tmp_path / "covid19.bam")
-    assert os.path.exists(tmp_path / "covid19.bam.bai")
