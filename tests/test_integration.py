@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 
 def test_jobscript_ont(tmp_path, run_jobscript):
     run_jobscript(
@@ -10,9 +12,10 @@ def test_jobscript_ont(tmp_path, run_jobscript):
     assert os.path.exists(tmp_path / "report.pdf")
 
 
-def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript):
+@pytest.mark.parametrize("num_subs", [0, 3])
+def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, num_subs):
     # generate some data
-    run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=3)
+    run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=num_subs)
     run_art(coverage=15)
     run_jobscript(input_filename="simulated_reads.fastq.gz")
 
