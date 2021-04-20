@@ -148,7 +148,6 @@ def run_docker_container(tmp_path, container_command, env=None):
         "docker",
         "run",
         "--rm",
-        *("--user", f"{os.getuid()}:{os.getgid()}"),
         *("--volume", f"{os.getcwd()}:/repo"),
         *("--volume", f"{tmp_path}:/pytest"),
         *("--volume", f"{os.getcwd()}/reference/:/share"),
