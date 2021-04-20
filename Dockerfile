@@ -66,8 +66,6 @@ RUN mkdir -p /usr/local/share/fonts \
     && cp /usr/local/lib/python3.8/site-packages/onecodex/assets/fonts/*.otf /usr/local/share/fonts \
     && fc-cache
 
-RUN npm install md5
-
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
@@ -78,4 +76,3 @@ ADD report.ipynb /
 ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gtf /
 ADD annot_table.orfs.txt /
-

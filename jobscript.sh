@@ -55,7 +55,6 @@ cp /share/low_complexity_regions.txt .
 echo "Generating notebook!"
 
 RESULTS_DIR="$(pwd)" \
-
 SAMPLE_PATH="${sample_filename}" \
 PYTHONWARNINGS="ignore" \
 conda run -n report jupyter \
