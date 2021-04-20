@@ -14,6 +14,8 @@ RUN apt-get update \
     && apt-get install -y gnupg \
     && curl -sL https://deb.nodesource.com/setup_14.x  | bash - \
     && apt-get install -y nodejs \
+    unzip \
+    default-jre \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -51,7 +53,6 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
 # install nextclade
 RUN npm install --global @neherlab/nextclade
 
-
 # update pangolin database 2021-03-18
 RUN conda run -n pangolin pangolin --update
 
@@ -66,6 +67,12 @@ RUN mkdir -p /usr/local/share/fonts \
     && cp /usr/local/lib/python3.8/site-packages/onecodex/assets/fonts/*.otf /usr/local/share/fonts \
     && fc-cache
 
+# install snpeff
+RUN wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip \
+        && unzip snpEff_latest_core.zip \
+	&& mv snpEff /usr/local/bin \
+        && rm snpEff_latest_core.zip
+
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.artic.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
@@ -74,5 +81,5 @@ ADD generate_tsv.py /usr/local/bin
 
 ADD report.ipynb /
 ADD nCoV-2019.reference.fasta /
-ADD nCoV-2019.reference.gtf /
+ADD nCoV-2019.reference.gbk /
 ADD annot_table.orfs.txt /
