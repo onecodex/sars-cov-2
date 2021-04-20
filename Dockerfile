@@ -76,3 +76,7 @@ ADD report.ipynb /
 ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gtf /
 ADD annot_table.orfs.txt /
+
+# because conda installs itself in the user home directory
+# read+execute for user + group + other
+RUN chmod 0555 /root
