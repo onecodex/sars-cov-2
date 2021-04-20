@@ -3,7 +3,7 @@ import os
 import pytest
 
 
-def test_jobscript_ont(tmp_path, run_jobscript, n_variants):
+def test_jobscript_ont(tmp_path, run_jobscript):
     run_jobscript(
         input_filename="/repo/data/ARTIC/ERR5284916.ONT.ARTICv3.40k.fastq.gz",
         instrument_vendor="Oxford Nanopore",
@@ -12,7 +12,7 @@ def test_jobscript_ont(tmp_path, run_jobscript, n_variants):
     assert os.path.exists(tmp_path / "report.pdf")
 
 
-def test_jobscript_ont_no_variants(tmp_path, run_jobscript, n_variants):
+def test_jobscript_ont_no_variants(tmp_path, run_jobscript):
     run_jobscript(
         input_filename="/repo/data/ARTIC/ERR5284916.ONT.ARTICv3.40k.fastq.gz",
         instrument_vendor="Oxford Nanopore",
