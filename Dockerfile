@@ -83,3 +83,4 @@ ADD report.ipynb /
 ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gbk /
 ADD annot_table.orfs.txt /
+ADD aa_codes.txt /

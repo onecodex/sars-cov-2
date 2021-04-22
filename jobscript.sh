@@ -51,6 +51,7 @@ ls -lash /
 cp /report.ipynb .
 cp /annot_table.orfs.txt .
 cp /share/low_complexity_regions.txt .
+cp /share/aa_codes.txt .
 
 echo "Generating notebook!"
 
