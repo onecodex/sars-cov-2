@@ -20,6 +20,7 @@ def test_snps_only_fastq(
 
     # Run pipeline on simulated data
     run_jobscript(input_filename="simulated_reads.fastq.gz")
+    breakpoint()
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
