@@ -115,36 +115,11 @@ bcftools consensus \
 
 zcat "${prefix}.vcf.gz" > "${prefix}.vcf"
 
-# prepare for vcf annotation with snpEff
-ls -lash /usr/local/bin/snpEff
-mkdir /usr/local/bin/snpEff/data
-mkdir /usr/local/bin/snpEff/data/NC_045512.2
-mv /nCoV-2019.reference.fasta /usr/local/bin/snpEff/data/NC_045512.2/sequences.fa
-mv /nCoV-2019.reference.gbk /usr/local/bin/snpEff/data/NC_045512.2/genes.gbk
-
-# match chromosome name between the genbank file, fasta files, and vcf
-# MN908947.3 and NC_045512.2 are identical genomes (Refseq vs assembly numbers)
-sed -i "s|MN908947.3|NC_045512.2|" /usr/local/bin/snpEff/data/NC_045512.2/sequences.fa
-sed -i "s|MN908947.3|NC_045512.2|" ${prefix}.vcf
-
-# build custom snpeff database
-echo "NC_045512.2.genome : nCoV-2019 ARTIC V3" >> /usr/local/bin/snpEff/snpEffect.config
-java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /usr/local/bin/snpEff/snpEffect.config -noGenome -genbank -v NC_045512.2
-# run snpeff annotation on vcf
-java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -config /usr/local/bin/snpEff/snpEffect.config -fastaProt ${prefix}.snpeff.vcf.faa -csvStats ${prefix}.snpeff.vcf.stats ${prefix}.vcf > ${prefix}.snpeff.vcf
-# extract fields of interest from annotated vcf
-java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields ${prefix}.snpeff.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P > ${prefix}.snpeff.vcf.extracted.tsv
-# edit the effects field
-sed -i 's/_/ /g' ${prefix}.snpeff.vcf.extracted.tsv
-sed -i 's/&/; /g' ${prefix}.snpeff.vcf.extracted.tsv
-
 # Move some files around and clean up
 mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.vcf" "variants.vcf"
 mv "${prefix}.sorted.bam" "covid19.bam"
 mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
-mv "${prefix}.snpeff.vcf" "variants.snpeff.vcf"
-mv "${prefix}.snpeff.vcf.extracted.tsv" "variants.snpeff.tsv"
 rm "${prefix}"*
 
-#echo "[ ] Finished!"
+echo "[ ] Finished!"
