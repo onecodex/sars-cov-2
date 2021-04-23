@@ -25,11 +25,12 @@ fi
 
 echo "Annotating VCF file using snpEff"
 # prepare for vcf annotation with snpEff
-ls -lash /usr/local/bin/snpEff
-mkdir /usr/local/bin/snpEff/data
-mkdir /usr/local/bin/snpEff/data/NC_045512.2
-mv /nCoV-2019.reference.fasta /usr/local/bin/snpEff/data/NC_045512.2/sequences.fa
-mv /nCoV-2019.reference.gbk /usr/local/bin/snpEff/data/NC_045512.2/genes.gbk
+if [ ! -d "/usr/local/bin/snpEff/data" ]; then
+  mkdir /usr/local/bin/snpEff/data
+  mkdir /usr/local/bin/snpEff/data/NC_045512.2
+  mv /nCoV-2019.reference.fasta /usr/local/bin/snpEff/data/NC_045512.2/sequences.fa
+  mv /nCoV-2019.reference.gbk /usr/local/bin/snpEff/data/NC_045512.2/genes.gbk
+fi
 
 # match chromosome name between the genbank file, fasta files, and vcf
 # MN908947.3 and NC_045512.2 are identical genomes (Refseq vs assembly numbers)
@@ -41,14 +42,15 @@ echo "NC_045512.2.genome : nCoV-2019 ARTIC V3" >> /usr/local/bin/snpEff/snpEffec
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /usr/local/bin/snpEff/snpEffect.config -noGenome -genbank -v NC_045512.2
 # run snpeff annotation on vcf
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -config /usr/local/bin/snpEff/snpEffect.config -fastaProt variants.snpeff.vcf.faa -csvStats variants.snpeff.vcf.stats variants.vcf > variants.snpeff.vcf
-# extract fields of interest from annotated vcf
-java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.vcf.extracted.tsv
+# if Illumina, extract fields of interest from annotated vcf into a tsv
+if [ "${INSTRUMENT_VENDOR}" == "Illumina" ]; then
+  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.vcf.extracted.tsv
+fi
 # edit the effects field
 sed -i 's/_/ /g' variants.snpeff.vcf.extracted.tsv
 sed -i 's/&/; /g' variants.snpeff.vcf.extracted.tsv
 
-mv "variants.snpeff.vcf" "variants.snpeff.vcf"
-mv "variants.snpeff.vcf.extracted.tsv" "variants.snpeff.tsv"
+mv variants.snpeff.vcf.extracted.tsv variants.snpeff.tsv
 
 # needed by report
 echo "Getting depth using samtools"
