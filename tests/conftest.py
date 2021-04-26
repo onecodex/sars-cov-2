@@ -56,7 +56,12 @@ def run_snp_mutator(tmp_path):
 
 
 def _generate_snp_mutator_args(
-    tmp_path, input_fasta_file=None, num_subs=10, num_insertions=0, num_deletions=0, random_seed=42
+    tmp_path,
+    input_fasta_file=None,
+    num_subs=10,
+    num_insertions=0,
+    num_deletions=0,
+    random_seed=42,
 ):
     """Wrapper to generate args for SNP mutator"""
     if input_fasta_file is None:
@@ -180,7 +185,11 @@ def run_docker_container(tmp_path, container_command, env=None):
 @pytest.fixture
 def run_post_process_variants(tmp_path):
     def _run_post_process_variants(input_filename=None):
-        container_command = ["/bin/bash", "/repo/post_process_variants.sh", input_filename]
+        container_command = [
+            "/bin/bash",
+            "/repo/post_process_variants.sh",
+            input_filename,
+        ]
 
         run_docker_container(tmp_path, container_command)
 
@@ -220,7 +229,11 @@ def run_call_variants_illumina(tmp_path):
 @pytest.fixture
 def run_call_variants_ont(tmp_path):
     def _run_call_variants_ont(input_filename):
-        container_command = ["/bin/bash", "/repo/covid19_call_variants.artic.sh", input_filename]
+        container_command = [
+            "/bin/bash",
+            "/repo/covid19_call_variants.ont.sh",
+            input_filename,
+        ]
 
         run_docker_container(tmp_path, container_command)
 

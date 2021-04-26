@@ -74,7 +74,7 @@ RUN wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip \
         && rm snpEff_latest_core.zip
 
 ADD covid19_call_variants.sh /usr/local/bin/
-ADD covid19_call_variants.artic.sh /usr/local/bin/
+ADD covid19_call_variants.ont.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
 ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
@@ -84,3 +84,4 @@ ADD nCoV-2019.reference.fasta /
 ADD nCoV-2019.reference.gbk /
 ADD annot_table.orfs.txt /
 ADD aa_codes.txt /
+ADD low_complexity_regions.txt /

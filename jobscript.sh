@@ -15,7 +15,7 @@ echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 # covid19.bam (sorted+bai)
 # consensus.fa
 if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
-  covid19_call_variants.artic.sh "${sample_filename}"
+  covid19_call_variants.ont.sh "${sample_filename}"
 else
   covid19_call_variants.sh \
     /share/nCoV-2019.reference.fasta \
@@ -40,17 +40,26 @@ sed -i "s|MN908947.3|NC_045512.2|" variants.vcf
 # build custom snpeff database
 echo "NC_045512.2.genome : nCoV-2019 ARTIC V3" >> /usr/local/bin/snpEff/snpEffect.config
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /usr/local/bin/snpEff/snpEffect.config -noGenome -genbank -v NC_045512.2
+
 # run snpeff annotation on vcf
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -config /usr/local/bin/snpEff/snpEffect.config -fastaProt variants.snpeff.vcf.faa -csvStats variants.snpeff.vcf.stats variants.vcf > variants.snpeff.vcf
-# if Illumina, extract fields of interest from annotated vcf into a tsv
-if [ "${INSTRUMENT_VENDOR}" == "Illumina" ]; then
-  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.vcf.extracted.tsv
-fi
-# edit the effects field
-sed -i 's/_/ /g' variants.snpeff.vcf.extracted.tsv
-sed -i 's/&/; /g' variants.snpeff.vcf.extracted.tsv
 
-mv variants.snpeff.vcf.extracted.tsv variants.snpeff.tsv
+# Extract fields of interest from annotated vcf into a tsv, treating SR and DP4 as essentially identical information
+# In the Medaka-generated vcf for ONT data:
+# SR="Depth of spanning reads by strand which best align to each allele (ref fwd, ref rev, alt1 fwd, alt1 rev, etc.)"
+# In the bcftools-generated vcf for Illumina data:
+# DP4="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases"
+if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
+  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT SR ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.tsv
+  sed -i 's/SR/allele reads by strand/' variants.snpeff.tsv
+else
+  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.tsv
+  sed -i 's/DP4/allele reads by strand/' variants.snpeff.tsv
+fi
+
+# edit the effects field to make it more readable in the table
+sed -i 's/_/ /g' variants.snpeff.tsv
+sed -i 's/&/; /g' variants.snpeff.tsv
 
 # needed by report
 echo "Getting depth using samtools"
@@ -78,7 +87,7 @@ ls -lash /
 
 # render notebook
 cp /report.ipynb .
-cp /annot_table.orfs.txt .
+cp /share/annot_table.orfs.txt .
 cp /share/low_complexity_regions.txt .
 cp /share/aa_codes.txt .
 
