@@ -1,0 +1,26 @@
+nsp1 in orf1ab	266	805	cds	.
+nsp2 in orf1ab	806	2719	cds	.
+nsp3 in orf1ab	2720	8554	cds	.
+nsp4 in orf1ab	8555	10054	cds	.
+nsp5 in orf1ab	10055	10972	cds	.
+nsp6 in orf1ab	10973	11842	cds	.
+nsp7 in orf1ab	11843	12091	cds	.
+nsp8 in orf1ab	12092	12685	cds	.
+nsp9 in orf1ab	12686	13024	cds	.
+nsp10 in orf1ab	13025	13441	cds	.
+nsp12 in orf1ab	13442	16236	cds	.
+nsp13 in orf1ab	16237	18039	cds	.
+nsp14 in orf1ab	18040	19620	cds	.
+nsp15 in orf1ab	19621	20658	cds	.
+nsp16 in orf1ab	20659	21552	cds	.
+nsp11 in orf1ab	13442	13480	cds	.
+spike	21563	25384	cds	.
+orf3A	25393	26220	cds	.
+geneE	26245	26472	cds	.
+geneM	26523	27191	cds	.
+orf6	27202	27387	cds	.
+orf7A	27394	27759	cds	.
+orf7B	27756	27887	cds	.
+orf8	27894	28259	cds	.
+geneN	28274	29533	cds	.
+orf10	29558	29674	cds	.
