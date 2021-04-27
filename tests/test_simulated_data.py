@@ -25,9 +25,9 @@ def test_snps_only_fastq(
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
     called = read_vcf_as_dataframe(tmp_path / "variants.vcf")
 
-    assert all(truth["Position"] == called["POS"])
-    assert all(truth["OriginalBase"] == called["REF"])
-    assert all(truth["NewBase"] == called["ALT"])
+    assert list(truth["Position"]) == list(called["POS"])
+    assert list(truth["OriginalBase"]) == list(called["REF"])
+    assert list(truth["NewBase"]) == list(called["ALT"])
 
     # We add these tests to ensure we have a high percent of reads aligning
     # We simulate at 50x, so low end variants with coverage variability should
