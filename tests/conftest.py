@@ -66,6 +66,7 @@ def _generate_snp_mutator_args(
     """Wrapper to generate args for SNP mutator"""
     if input_fasta_file is None:
         raise Exception("Requires an input reference FASTA")
+
     kwargs = locals()
     kwargs.pop("tmp_path")
     args = Namespace(
@@ -155,7 +156,6 @@ def run_docker_container(tmp_path, container_command, env=None):
         "--rm",
         *("--volume", f"{os.getcwd()}:/repo"),
         *("--volume", f"{tmp_path}:/pytest"),
-        *("--volume", f"{os.getcwd()}/reference/:/share"),
         *("--workdir", "/pytest"),
         *[i for r in [("--env", f"{k}={v}") for k, v in env.items()] for i in r],
         "covid19",
@@ -216,9 +216,9 @@ def run_call_variants_illumina(tmp_path):
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
-            "/share/nCoV-2019.reference.fasta",
+            "/reference/nCoV-2019.reference.fasta",
             input_filename,
-            "/share/ARTIC-V3.bed",
+            "/reference/ARTIC-V3.bed",
         ]
 
         run_docker_container(tmp_path, container_command)

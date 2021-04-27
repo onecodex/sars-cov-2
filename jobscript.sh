@@ -18,9 +18,9 @@ if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
   covid19_call_variants.ont.sh "${sample_filename}"
 else
   covid19_call_variants.sh \
-    /share/nCoV-2019.reference.fasta \
+    /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    /share/ARTIC-V3.bed
+    /reference/ARTIC-V3.bed
 fi
 
 echo "Annotating VCF file using snpEff"
@@ -78,9 +78,9 @@ ls -lash /
 
 # render notebook
 cp /report.ipynb .
-cp /share/annot_table.orfs.txt .
-cp /share/low_complexity_regions.txt .
-cp /share/aa_codes.txt .
+cp /reference/annot_table.orfs.txt .
+cp /reference/low_complexity_regions.txt .
+cp /reference/aa_codes.txt .
 
 echo "Generating notebook!"
 
