@@ -38,8 +38,6 @@ def test_snps_only_fastq(
     # Finally, test that the FASTAs match
     # Note we ignore the first 50bp which may have low coverage and N masking
     # plus the final 120bps due to a polyA tail
-    reference = list(
-        SeqIO.parse(f"{tmp_path}/nCoV-2019.reference_mutated_1.fasta", "fasta")
-    )[0]
+    reference = list(SeqIO.parse(f"{tmp_path}/nCoV-2019.reference_mutated_1.fasta", "fasta"))[0]
     consensus = list(SeqIO.parse(f"{tmp_path}/consensus.fa", "fasta"))[0]
     assert consensus.seq[50:-120] in reference.seq
