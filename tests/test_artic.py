@@ -30,6 +30,7 @@ def test_sra_illumina_artic(tmp_path, run_call_variants_illumina, read_vcf_as_da
 
 def test_ont_artic(tmp_path, run_call_variants_ont, read_vcf_as_dataframe):
     run_call_variants_ont(input_filename="/repo/data/ARTIC/ERR5284916.ONT.ARTICv3.40k.fastq.gz")
+    breakpoint()
     assert os.path.exists(tmp_path / "consensus.fa")
     assert os.path.exists(tmp_path / "variants.vcf")
     assert os.path.exists(tmp_path / "covid19.bam")

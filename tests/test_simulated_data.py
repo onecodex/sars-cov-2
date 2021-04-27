@@ -11,8 +11,8 @@ def test_snps_only_fastq(
     run_snp_mutator(
         input_fasta_file="reference/nCoV-2019.reference.fasta",
         num_subs=n,
-        num_insertions=0,
-        num_deletions=0,
+        num_insertions=5,
+        num_deletions=5,
     )
 
     # Run ART
@@ -20,6 +20,7 @@ def test_snps_only_fastq(
 
     # Run pipeline on simulated data
     run_jobscript(input_filename="simulated_reads.fastq.gz")
+    breakpoint()
 
     # Check that all variants are detected and there are no extras
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")

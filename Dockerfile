@@ -78,10 +78,8 @@ ADD covid19_call_variants.ont.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
 ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
-
 ADD report.ipynb /
-ADD nCoV-2019.reference.fasta /
-ADD nCoV-2019.reference.gbk /
-ADD annot_table.orfs.txt /
-ADD aa_codes.txt /
-ADD low_complexity_regions.txt /
+
+COPY reference /reference
+
+CMD ["java", "-Xmx4g", "-jar", "/usr/local/bin/snpEff/snpEff.jar", "build", "-c", "/usr/local/reference/snpEffect.config", "-noGenome", "-genbank", "-v", "NC_045512.2"]
