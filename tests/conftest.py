@@ -110,7 +110,7 @@ def run_art(tmp_path):
         input_reference="nCoV-2019.reference_mutated_1.fasta",
         system="MSv3",
         read_length=150,
-        coverage=50,
+        coverage=100,
     ):
         subprocess.check_output(
             [
