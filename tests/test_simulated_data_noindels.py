@@ -11,8 +11,8 @@ def test_snps_only_fastq(
     run_snp_mutator(
         input_fasta_file="reference/nCoV-2019.reference.fasta",
         num_subs=n,
-        num_insertions=5,
-        num_deletions=5,
+        num_insertions=0,
+        num_deletions=0,
     )
 
     # Run ART
@@ -25,9 +25,7 @@ def test_snps_only_fastq(
     truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
     called = read_vcf_as_dataframe(tmp_path / "variants.vcf")
 
-    # We don't test for position with indels because vcf positions are shifted by 0-2 bases
-    # from the base immediately preceding the actual indel, which is how programs like Nextclade
-    # report indel positions.
+    assert list(truth["Position"]) == list(called["POS"])
     assert list(truth["OriginalBase"]) == list(called["REF"])
     assert list(truth["NewBase"]) == list(called["ALT"])
 
