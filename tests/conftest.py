@@ -56,11 +56,17 @@ def run_snp_mutator(tmp_path):
 
 
 def _generate_snp_mutator_args(
-    tmp_path, input_fasta_file=None, num_subs=10, num_insertions=0, num_deletions=0, random_seed=42
+    tmp_path,
+    input_fasta_file=None,
+    num_subs=10,
+    num_insertions=0,
+    num_deletions=0,
+    random_seed=42,
 ):
     """Wrapper to generate args for SNP mutator"""
     if input_fasta_file is None:
         raise Exception("Requires an input reference FASTA")
+
     kwargs = locals()
     kwargs.pop("tmp_path")
     args = Namespace(
@@ -104,7 +110,7 @@ def run_art(tmp_path):
         input_reference="nCoV-2019.reference_mutated_1.fasta",
         system="MSv3",
         read_length=150,
-        coverage=50,
+        coverage=100,
     ):
         subprocess.check_output(
             [
@@ -150,7 +156,6 @@ def run_docker_container(tmp_path, container_command, env=None):
         "--rm",
         *("--volume", f"{os.getcwd()}:/repo"),
         *("--volume", f"{tmp_path}:/pytest"),
-        *("--volume", f"{os.getcwd()}/reference/:/share"),
         *("--workdir", "/pytest"),
         *[i for r in [("--env", f"{k}={v}") for k, v in env.items()] for i in r],
         "covid19",
@@ -180,7 +185,11 @@ def run_docker_container(tmp_path, container_command, env=None):
 @pytest.fixture
 def run_post_process_variants(tmp_path):
     def _run_post_process_variants(input_filename=None):
-        container_command = ["/bin/bash", "/repo/post_process_variants.sh", input_filename]
+        container_command = [
+            "/bin/bash",
+            "/repo/post_process_variants.sh",
+            input_filename,
+        ]
 
         run_docker_container(tmp_path, container_command)
 
@@ -207,9 +216,9 @@ def run_call_variants_illumina(tmp_path):
         container_command = [
             "/bin/bash",
             "/repo/covid19_call_variants.sh",
-            "/share/nCoV-2019.reference.fasta",
+            "/reference/nCoV-2019.reference.fasta",
             input_filename,
-            "/share/ARTIC-V3.bed",
+            "/reference/ARTIC-V3.bed",
         ]
 
         run_docker_container(tmp_path, container_command)
@@ -220,7 +229,11 @@ def run_call_variants_illumina(tmp_path):
 @pytest.fixture
 def run_call_variants_ont(tmp_path):
     def _run_call_variants_ont(input_filename):
-        container_command = ["/bin/bash", "/repo/covid19_call_variants.artic.sh", input_filename]
+        container_command = [
+            "/bin/bash",
+            "/repo/covid19_call_variants.ont.sh",
+            input_filename,
+        ]
 
         run_docker_container(tmp_path, container_command)
 

@@ -94,6 +94,10 @@ bcftools \
     --output-type z \
     --output "${prefix}.raw.vcf.gz"
 
+# save raw vcf
+bcftools view \
+  < "${prefix}.raw.vcf.gz" \
+  > "${prefix}.raw.vcf"
 
 # filter out low-quality variants
 bcftools view \
@@ -120,6 +124,7 @@ mv "${prefix}.consensus.fa" "consensus.fa"
 mv "${prefix}.vcf" "variants.vcf"
 mv "${prefix}.sorted.bam" "covid19.bam"
 mv "${prefix}.sorted.bam.bai" "covid19.bam.bai"
+mv "${prefix}.raw.vcf" "variants.raw.vcf"
 rm "${prefix}"*
 
 echo "[ ] Finished!"
