@@ -34,6 +34,18 @@ jobs:
           pip install -q -U pip
           pip install --progress-bar=off -r requirements.txt
 
+      - name: Cache Docker IMAGE
+        uses: actions/cache@v2
+        with:
+          path: |
+            Dockerfile
+            environment.yml
+            reference
+            report.ipynb
+            *.sh
+            *.py
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+
       - name: Docker build
         run: |
           docker build -t covid19 .
