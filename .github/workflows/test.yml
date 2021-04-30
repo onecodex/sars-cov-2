@@ -48,3 +48,21 @@ jobs:
         with:
           name: example report PDFs
           path: report-*.pdf
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: results
+
+      - name: comment PR
+        uses: machine-learning-apps/pr-comment@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: report-ont.pdf
+
+      - name: comment PR
+        uses: machine-learning-apps/pr-comment@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: report-illumina.pdf
