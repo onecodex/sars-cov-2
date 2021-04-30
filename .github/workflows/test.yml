@@ -42,3 +42,9 @@ jobs:
         run: |
           . venv/bin/activate
           make test
+
+      - name: Upload Report PDFs
+        uses: actions/upload-artifact@v2
+        with:
+          name: example reports
+          path: report-*.pdf

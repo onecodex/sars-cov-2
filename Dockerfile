@@ -79,7 +79,9 @@ ADD post_process_variants.sh /usr/local/bin/
 ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
 ADD report.ipynb /
+# so we can include git hash in report for tracking
+COPY .git /.git
 
 COPY reference /reference
 
-CMD ["java", "-Xmx4g", "-jar", "/usr/local/bin/snpEff/snpEff.jar", "build", "-c", "/usr/local/reference/snpEffect.config", "-noGenome", "-genbank", "-v", "NC_045512.2"]
+RUN java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /reference/snpEffect.config -noGenome -genbank -v NC_045512.2
