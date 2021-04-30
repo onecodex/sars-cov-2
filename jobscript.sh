@@ -87,6 +87,8 @@ echo "Generating notebook!"
 RESULTS_DIR="$(pwd)" \
 SAMPLE_PATH="${sample_filename}" \
 PYTHONWARNINGS="ignore" \
+GIT_DIR="/.git" \
+GIT_WORK_TREE="/" \
 conda run -n report jupyter \
       nbconvert \
       --execute \
