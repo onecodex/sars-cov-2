@@ -46,19 +46,12 @@ jobs:
       - name: Upload Report PDF
         uses: actions/upload-artifact@v2
         with:
-          name: example report PDFs
-          path: report-*.pdf
+          name: illumina-report
+          path: report-illumina.pdf
 
       - uses: actions/download-artifact@v1
         with:
-          name: results
-
-      - name: comment PR
-        uses: machine-learning-apps/pr-comment@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          path: report-ont.pdf
+          name: illumina-report
 
       - name: comment PR
         uses: machine-learning-apps/pr-comment@master
