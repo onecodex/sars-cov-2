@@ -83,10 +83,9 @@ bcftools \
   mpileup \
   --annotate FORMAT/AD,INFO/AD \
   --fasta-ref "${reference}" \
-  --max-depth 0 \
-  --count-orphans \
+  --max-depth 200 \
+  --max-idepth 200 \
   --no-BAQ \
-  --min-BQ 0 \
   "${prefix}.sorted.bam" \
   | bcftools call \
     --variants-only \
@@ -95,9 +94,7 @@ bcftools \
     --output "${prefix}.raw.vcf.gz"
 
 # save raw vcf
-bcftools view \
-  < "${prefix}.raw.vcf.gz" \
-  > "${prefix}.raw.vcf"
+zcat "${prefix}.raw.vcf.gz" > "${prefix}.raw.vcf"
 
 # filter out low-quality variants
 bcftools view \
