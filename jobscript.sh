@@ -36,7 +36,7 @@ java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /reference/snpEffect.
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -config /reference/snpEffect.config -fastaProt variants.snpeff.vcf.faa -csvStats variants.snpeff.vcf.stats variants.vcf > variants.snpeff.vcf
 
 # run bcftools csq to link consecutive SNPs on the same codon (BCSQ field)
-conda run -n report bcftools csq --force --phase a -f /reference/NC_045512.2.reference.fasta -g /reference/nCoV-2019.reference.gbk.to.gff -Ov variants.snpeff.vcf -o variants.snpeff.csq.vcf
+conda run -n report bcftools csq --force --phase a -f /reference/NC_045512.2.reference.fasta -g /reference/data/NC_045512.2/genes.gff -Ov variants.snpeff.vcf -o variants.snpeff.csq.vcf
 
 # Extract fields of interest from annotated vcf into a tsv, treating SR and DP4 as essentially identical information
 # In the Medaka-generated vcf for ONT data:
