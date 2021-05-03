@@ -29,11 +29,16 @@ echo "Annotating VCF file using snpEff"
 sed -i "s|MN908947.3|NC_045512.2|" variants.vcf
 
 # build custom snpeff database
-java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /reference/snpEffect.config -noGenome -genbank -v NC_045512.2
+java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /reference/snpEffect.config -noGenome -gff3 -v NC_045512.2
 
 # run snpeff annotation on vcf
 # snpeff expects your sequence.fa and genes.gbk file to be in ../data/NC_045512.2 relative to snpEffect.config
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -config /reference/snpEffect.config -fastaProt variants.snpeff.vcf.faa -csvStats variants.snpeff.vcf.stats variants.vcf > variants.snpeff.vcf
+
+# run bcftools csq to link consecutive SNPs on the same codon (BCSQ field)
+#sed -i "s|MN908947.3|NC_045512.2|" /reference/nCoV-2019.reference.fasta
+#sed -i "s|MN908947.3|NC_045512.2|" /reference/nCoV-2019.reference.fasta.fai
+conda run -n report bcftools csq --force --phase a -f /reference/NC_045512.2.reference.fasta -g /reference/nCoV-2019.reference.gbk.to.gff -Ov variants.snpeff.vcf -o variants.snpeff.csq.vcf
 
 # Extract fields of interest from annotated vcf into a tsv, treating SR and DP4 as essentially identical information
 # In the Medaka-generated vcf for ONT data:
@@ -41,10 +46,10 @@ java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -conf
 # In the bcftools-generated vcf for Illumina data:
 # DP4="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases"
 if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
-  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT SR ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.tsv
+  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.csq.vcf POS REF ALT SR ANN[0].EFFECT ANN[0].HGVS_P BCSQ > variants.snpeff.tsv
   sed -i 's/SR/allele reads by strand/' variants.snpeff.tsv
 else
-  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P > variants.snpeff.tsv
+  java -Xmx4g -jar /usr/local/bin/snpEff/SnpSift.jar extractFields variants.snpeff.csq.vcf POS REF ALT DP4 ANN[0].EFFECT ANN[0].HGVS_P BCSQ > variants.snpeff.tsv
   sed -i 's/DP4/allele reads by strand/' variants.snpeff.tsv
 fi
 

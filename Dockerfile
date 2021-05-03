@@ -80,6 +80,7 @@ ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
 ADD report.ipynb /
 
+
 COPY reference /reference
 
-CMD ["java", "-Xmx4g", "-jar", "/usr/local/bin/snpEff/snpEff.jar", "build", "-c", "/usr/local/reference/snpEffect.config", "-noGenome", "-genbank", "-v", "NC_045512.2"]
+#CMD ["java", "-Xmx4g", "-jar", "/usr/local/bin/snpEff/snpEff.jar", "build", "-c", "/usr/local/reference/snpEffect.config", "-noGenome", "-gff3", "-v", "NC_045512.2"]
