@@ -1,4 +1,8 @@
+# these tests will copy the reports to the current working directory
+# there is a GitHub action setup to upload these reports as artifacts
+
 import os
+import shutil
 
 import pytest
 
@@ -11,6 +15,8 @@ def test_jobscript_ont(tmp_path, run_jobscript):
 
     assert os.path.exists(tmp_path / "report.pdf")
 
+    shutil.copy(tmp_path / "report.pdf", "report-ont.pdf")
+
 
 @pytest.mark.parametrize("num_subs", [0, 3])
 def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, num_subs):
@@ -20,3 +26,5 @@ def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, n
     run_jobscript(input_filename="simulated_reads.fastq.gz")
 
     assert os.path.exists(tmp_path / "report.pdf")
+
+    shutil.copy(tmp_path / "report.pdf", "report-illumina.pdf")
