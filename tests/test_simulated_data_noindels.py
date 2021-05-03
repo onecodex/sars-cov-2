@@ -22,7 +22,16 @@ def test_snps_only_fastq(
     run_jobscript(input_filename="simulated_reads.fastq.gz")
 
     # Check that all variants are detected and there are no extras
-    truth = pd.read_csv(open(tmp_path / "summary.tsv"), sep="\t")
+    truth = pd.read_csv(
+        open(tmp_path / "summary.tsv"),
+        sep="\t",
+        dtype={
+            "Replicate": "str",
+            "Position": "str",
+            "OriginalBase": "str",
+            "NewBase": "str",
+        },
+    )
     called = read_vcf_as_dataframe(tmp_path / "variants.vcf")
 
     assert list(truth["Position"]) == list(called["POS"])

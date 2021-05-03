@@ -20,7 +20,16 @@ def test_sra_illumina_artic(tmp_path, run_call_variants_illumina, read_vcf_as_da
     # need to rewrite notebook to not depend on this TSV (use nextclade output instead)
     called = read_vcf_as_dataframe(tmp_path / "variants.vcf")
 
-    truth = pd.read_csv("data/ARTIC/SRR11314339.ARTICv1.100k.truth.tsv", sep="\t")
+    truth = pd.read_csv(
+        "data/ARTIC/SRR11314339.ARTICv1.100k.truth.tsv",
+        sep="\t",
+        dtype={
+            "Replicate": "str",
+            "Position": "str",
+            "OriginalBase": "str",
+            "NewBase": "str",
+        },
+    )
 
     # Subset to depth >= 10 and then compare
     assert all(truth["Position"] == called["POS"])
