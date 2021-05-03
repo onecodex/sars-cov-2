@@ -11,8 +11,8 @@ def test_snps_only_fastq(
     run_snp_mutator(
         input_fasta_file="reference/nCoV-2019.reference.fasta",
         num_subs=n,
-        num_insertions=2,
-        num_deletions=2,
+        num_insertions=0,
+        num_deletions=0,
     )
 
     # Run ART
@@ -33,8 +33,8 @@ def test_snps_only_fastq(
     # We add these tests to ensure we have a high percent of reads aligning
     # We simulate at 50x, so low end variants with coverage variability should
     # be ~25-30x, and then another ~33-50% due to Q scores <20
-    assert (called["Alt depth"] > 10).all()
-    assert called["Alt depth"].mean() > 15
+    assert (called["Alt high quality reads"] > 10).all()
+    assert called["Alt high quality reads"].mean() > 15
 
     # Finally, test that the FASTAs match
     # Note we ignore the first 50bp which may have low coverage and N masking
