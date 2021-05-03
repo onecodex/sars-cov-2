@@ -82,6 +82,5 @@ ADD report.ipynb /
 # so we can include git hash in report for tracking
 COPY .git /.git
 
-COPY reference /reference
 
-RUN java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /reference/snpEffect.config -noGenome -genbank -v NC_045512.2
+COPY reference /reference

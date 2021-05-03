@@ -83,10 +83,8 @@ bcftools \
   mpileup \
   --annotate FORMAT/AD,INFO/AD \
   --fasta-ref "${reference}" \
-  --max-depth 0 \
-  --count-orphans \
+  --max-depth 200 \
   --no-BAQ \
-  --min-BQ 0 \
   "${prefix}.sorted.bam" \
   | bcftools call \
     --variants-only \

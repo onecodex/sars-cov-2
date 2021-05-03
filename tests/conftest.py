@@ -19,6 +19,16 @@ def read_vcf_as_dataframe():
             comment="#",
             names=["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"],
             usecols=[0, 1, 2, 3, 4, 5, 6, 7],
+            dtype={
+                "CHROM": "str",
+                "POS": "str",
+                "ID": "str",
+                "REF": "str",
+                "ALT": "str",
+                "QUAL": "str",
+                "FILTER": "str",
+                "INFO": "str",
+            },
         )
 
         # parse info add key/value items to data-frame
