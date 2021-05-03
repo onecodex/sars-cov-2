@@ -67,3 +67,5 @@ It also uses [`pre-commit`](https://pre-commit.com/) to keep things clean and or
 Many thanks are due across the community, including _but not limited_ to:
 - [@tseemann](https://github.com/tseemann), [@gkarthik](https://github.com/gkarthik), [@nickloman](https://github.com/nickloman), and many others for quick discussions on optimal SNP calling for both amplicon (ARTIC primers) and non-amplicon sequencing approaches
 - [@nickloman](https://github.com/nickloman), [@joshquick](https://github.com/joshquick), [@rambaut](https://github.com/rambaut), [@k-florek](https://github.com/k-florek) and others working on the [ARTIC protocol for SARS-CoV-2](https://github.com/artic-network/artic-ncov2019)
+- [@pangolin](https://github.com/cov-lineages/pangolin) and [@nextclade](https://github.com/nextstrain/nextclade) for surveillance tools
+- [Voit lab](http://web.mit.edu/voigtlab/) for [dnaplotlib]https://github.com/VoigtLab/dnaplotlib)
