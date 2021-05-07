@@ -25,7 +25,7 @@ class NanoporeFilter:
     def check_filter(self, v):
         total_reads = float(v.INFO["TotalReads"])
         qual = v.QUAL
-        strandbias = float(v.INFO["StrandFisherTest"])
+        strandbias = float(v.INFO["StrandFisherTest"])  # noqa
 
         if qual / total_reads < 3:
             return False
@@ -85,7 +85,8 @@ def go(args):
 
     for v in variants:
 
-        # if using medaka, we need to do a quick pre-filter to remove rubbish that we don't want adding to the mask
+        # if using medaka, we need to do a quick pre-filter to remove rubbish
+        # that we don't want adding to the mask
         if v.QUAL is None:
             v.QUAL = 0
 
