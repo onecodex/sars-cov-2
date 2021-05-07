@@ -39,7 +39,7 @@ RUN conda env create -f environment.yml
 # install artic into conda environment "artic"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
         && cd fieldbioinformatics \
-        && conda env create -f environment.yml \
+	&& conda env create -f environment.yml \
         && conda run -n artic python setup.py install \
         && conda clean -a
 
@@ -73,14 +73,20 @@ RUN wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip \
 	&& mv snpEff /usr/local/bin \
         && rm snpEff_latest_core.zip
 
+# Edit ARTIC's vcf_filter.py script to account for rare edge case where a QUAL score of 0 gets represeted as a "." (breaks the ARTIC pipeline)
+
+
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.ont.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
 ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
 ADD report.ipynb /
+
 # so we can include git hash in report for tracking
 COPY .git /.git
-
-
 COPY reference /reference
+
+# ARTIC's vcf_filter.py breaks when a variant's call score is "."
+# I fixed this in reference/vcf_filter_edited.py
+COPY /reference/vcf_filter.edited.py /root/miniconda3/envs/artic/lib/python3.6/site-packages/artic-1.2.1-py3.6.egg/artic/vcf_filter.py
