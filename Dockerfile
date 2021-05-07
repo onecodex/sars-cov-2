@@ -73,8 +73,6 @@ RUN wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip \
 	&& mv snpEff /usr/local/bin \
         && rm snpEff_latest_core.zip
 
-# Edit ARTIC's vcf_filter.py script to account for rare edge case where a QUAL score of 0 gets represeted as a "." (breaks the ARTIC pipeline)
-
 
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.ont.sh /usr/local/bin/
