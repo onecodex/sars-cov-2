@@ -10,16 +10,22 @@ sample_filename="${1}"
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 
-########### First, attempt to update PangoLEARN. If update fails, the job fails
+########### First, attempt to update Pangolin and Nextclade. If either update fails, the job fails
 
 numtries=10
 for i in $(seq 1 $numtries); do
 	sleeptime=$((10+i*5))
 	[ "$i" -gt 1 ] && sleep $sleeptime
-	conda run -n pangolin pangolin --update && s=0 && break || s=$? && echo "Try $i/$numtries failed."
+	conda run -n pangolin pangolin --update && s=0 && break || s=$? && echo "Pangolin update attempt $i/$numtries failed."
 done
 (exit $s)
 
+for i in $(seq 1 $numtries); do
+        sleeptime=$((10+i*5))
+        [ "$i" -gt 1 ] && sleep $sleeptime
+        npm install --global @neherlab/nextclade && s=0 && break || s=$? && echo "Nextclade update attempt $i/$numtries failed."
+done
+(exit $s)
 
 # generates the following files:
 # variants.vcf
