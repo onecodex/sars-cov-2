@@ -50,12 +50,6 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
 
-# install nextclade
-RUN npm install --global @neherlab/nextclade
-
-# update pangolin database 2021-03-18
-RUN conda run -n pangolin pangolin --update
-
 # install dnaplotlib for creating the genome diagram
 RUN pip install dnaplotlib
 
