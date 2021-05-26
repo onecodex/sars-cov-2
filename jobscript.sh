@@ -16,9 +16,9 @@ numtries=10
 for i in $(seq 1 $numtries); do
 	sleeptime=$((10+i*5))
 	[ "$i" -gt 1 ] && sleep $sleeptime
-	conda run -n pangolin pangolin --update && s=0 && break || s=$?
+	conda run -n pangolin pangolin --update && s=0 && break || s=$? && echo "Try $i/$numtries failed."
 done
-{ echo "Failed to update pangoLEARN after $numtries tries" ; exit $s; }
+(exit $s)
 
 
 # generates the following files:
