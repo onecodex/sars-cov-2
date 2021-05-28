@@ -37,13 +37,15 @@ COPY environment.yml /
 RUN conda env create -f environment.yml
 
 # install artic into conda environment "artic"
+RUN echo "updating artic 05-28-2021"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
         && cd fieldbioinformatics \
-	&& conda env create -f environment.yml \
+      	&& conda env create -f environment.yml \
         && conda run -n artic python setup.py install \
         && conda clean -a
 
 # install pangolin into conda environment "pangolin"
+RUN echo "updating pangolin 05-28-2021"
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
         && conda env create -f environment.yml \
