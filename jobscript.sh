@@ -27,6 +27,8 @@ for i in $(seq 1 $numtries); do
 done
 (exit $s)
 
+########### Main script
+
 # generates the following files:
 # variants.vcf
 # covid19.bam (sorted+bai)
@@ -87,10 +89,6 @@ echo "Assigning NextClade Clade"
 nextclade --input-fasta consensus.fa --output-tsv nextclade.tsv --output-json nextclade.json
 
 # Assign Pango lineage
-echo "Updating Pango Database"
-#conda run -n pangolin pangolin --update # being intensively updated
-
-# TODO: copy pangolin database data somewhere.
 echo "Assigning Pango Lineage"
 conda run -n pangolin pangolin consensus.fa --outfile pangolin.csv
 
