@@ -9,6 +9,8 @@ import pandas as pd
 import pytest
 from snpmutator.script import run_from_args
 
+IMAGE = "quay.io/refgenomics/covid19@sha256:19522ed43fa83f80cccad4c1e26592b74e9ea61233ea65cd41a65a823851327b"
+
 
 @pytest.fixture
 def read_vcf_as_dataframe():
@@ -131,7 +133,7 @@ def run_art(tmp_path):
                 *("--volume", f"{tmp_path}:/pytest"),
                 "--workdir",
                 "/pytest",
-                "covid19",
+                IMAGE,
                 *(
                     *("conda", "run", "-n", "report"),
                     "art_illumina",
@@ -168,7 +170,7 @@ def run_docker_container(tmp_path, container_command, env=None):
         *("--volume", f"{tmp_path}:/pytest"),
         *("--workdir", "/pytest"),
         *[i for r in [("--env", f"{k}={v}") for k, v in env.items()] for i in r],
-        "covid19",
+        IMAGE,
         *container_command,
     ]
 
