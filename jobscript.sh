@@ -10,8 +10,9 @@ sample_filename="${1}"
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 
-
 ########### First, attempt to update Pangolin and Nextclade. If either update fails, the job fails
+
+echo "--- updating pangolin and nextclade"
 
 numtries=10
 for i in $(seq 1 $numtries); do
