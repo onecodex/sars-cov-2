@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 from snpmutator.script import run_from_args
 
-IMAGE = "quay.io/refgenomics/covid19:CH-random-exponential-backoff"
+IMAGE = "covid19"
 
 
 @pytest.fixture
