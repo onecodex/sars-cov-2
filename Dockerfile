@@ -10,6 +10,7 @@ RUN pip install pysam==0.16 biopython==1.78 PyVCF
 
 USER root
 RUN apt-get update \
+    && apt-get install bc \
     && apt-get autoclean \
     && apt-get install -y gnupg \
     && curl -sL https://deb.nodesource.com/setup_14.x  | bash - \

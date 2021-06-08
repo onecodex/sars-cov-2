@@ -19,7 +19,7 @@ for i in $(seq 1 $numtries); do
 	# generate a random number in [0,1) with 4 digits
 	rand_num=$(awk -v n=1 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.4f\n", rand()) }')
 	# use this random number to generate a random exponential base in [2,2.1). This will result in a maximum sleeptime of 18-28 minutes
-	sleeptime=$(awk '{print 30+(2+$1*0.1)**$2}' <<<"${rand_num} ${i}")
+	sleeptime=$(echo "30+(2+${rand_num}*0.1)^${i}" | bc)
 	[ "$i" -gt 1 ] && sleep "$sleeptime"
 	conda run -n pangolin pangolin --update && s=0 && break || s=$? && echo "Pangolin update attempt $i/$numtries failed."
 done
@@ -29,7 +29,7 @@ for i in $(seq 1 $numtries); do
         # generate a random number in [0,1) with 4 digits
         rand_num=$(awk -v n=1 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.4f\n", rand()) }')
         # use this random number to generate a random exponential base in [2,2.1). This will result in a maximum sleeptime of 18-28 minutes
-        sleeptime=$(awk '{print 30+(2+$1*0.1)**$2}' <<<"${rand_num} ${i}")
+	sleeptime=$(echo "30+(2+${rand_num}*0.1)^${i}" | bc)
 	[ "$i" -gt 1 ] && sleep "$sleeptime"
         npm install --global @neherlab/nextclade && s=0 && break || s=$? && echo "Nextclade update attempt $i/$numtries failed."
 done
