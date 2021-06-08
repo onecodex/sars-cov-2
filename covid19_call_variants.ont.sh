@@ -68,6 +68,7 @@ mv "${prefix}.pass.vcf" variants.vcf
 mv "${prefix}.consensus.fasta" consensus.fa
 mv "${prefix}.sorted.bam" covid19.bam
 mv "${prefix}.sorted.bam.bai" covid19.bam.bai
+mv "${prefix}.minion.log.txt" artic.log
 rm -rf "${prefix}.*"
 
 ##### 6. Run generate_tsv.py
