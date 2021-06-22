@@ -10,34 +10,6 @@ sample_filename="${1}"
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 
-########### First, attempt to update Pangolin and Nextclade. If either update fails, the job fails
-
-echo "--- updating pangolin and nextclade"
-
-numtries=10
-for i in $(seq 1 $numtries); do
-	# generate a random number in [0,1) with 4 digits
-	rand_num=$(awk -v n=1 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.4f\n", rand()) }')
-	# use this random number to generate a random exponential base in [2,2.1). This will result in a maximum sleeptime of 18-28 minutes
-	sleeptime=$(echo "30+(2+${rand_num}*0.1)^${i}" | bc)
-	[ "$i" -gt 1 ] && sleep "$sleeptime"
-	conda run -n pangolin pangolin --update && s=0 && break || s=$? && echo "Pangolin update attempt $i/$numtries failed."
-done
-(exit $s)
-
-for i in $(seq 1 $numtries); do
-        # generate a random number in [0,1) with 4 digits
-        rand_num=$(awk -v n=1 -v seed="$RANDOM" 'BEGIN { srand(seed); for (i=0; i<n; ++i) printf("%.4f\n", rand()) }')
-        # use this random number to generate a random exponential base in [2,2.1). This will result in a maximum sleeptime of 18-28 minutes
-	sleeptime=$(echo "30+(2+${rand_num}*0.1)^${i}" | bc)
-	[ "$i" -gt 1 ] && sleep "$sleeptime"
-        npm install --global @neherlab/nextclade && s=0 && break || s=$? && echo "Nextclade update attempt $i/$numtries failed."
-done
-(exit $s)
-
-
-########### Main script
-
 # generates the following files:
 # variants.vcf
 # covid19.bam (sorted+bai)
@@ -98,6 +70,8 @@ echo "Assigning NextClade Clade"
 nextclade --input-fasta consensus.fa --output-tsv nextclade.tsv --output-json nextclade.json
 
 # Assign Pango lineage
+
+# TODO: copy pangolin database data somewhere.
 echo "Assigning Pango Lineage"
 conda run -n pangolin pangolin consensus.fa --outfile pangolin.csv
 

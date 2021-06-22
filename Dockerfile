@@ -10,7 +10,6 @@ RUN pip install pysam==0.16 biopython==1.78 PyVCF
 
 USER root
 RUN apt-get update \
-    && apt-get install bc \
     && apt-get autoclean \
     && apt-get install -y gnupg \
     && curl -sL https://deb.nodesource.com/setup_14.x  | bash - \
@@ -38,20 +37,24 @@ COPY environment.yml /
 RUN conda env create -f environment.yml
 
 # install artic into conda environment "artic"
-RUN echo "updating artic 05-28-2021"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
         && cd fieldbioinformatics \
-      	&& conda env create -f environment.yml \
+	&& conda env create -f environment.yml \
         && conda run -n artic python setup.py install \
         && conda clean -a
 
 # install pangolin into conda environment "pangolin"
-RUN echo "updating pangolin 05-28-2021"
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
         && conda env create -f environment.yml \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
+
+# install nextclade
+RUN npm install --global @neherlab/nextclade
+
+# update pangolin database 2021-03-18
+RUN conda run -n pangolin pangolin --update
 
 # install dnaplotlib for creating the genome diagram
 RUN pip install dnaplotlib
