@@ -62,7 +62,7 @@ RUN pip install dnaplotlib
 RUN pip install nbconvert==6.0.7
 
 # Install onecodex_pdf export option
-RUN pip install onecodex[all,reports]==v0.9.4
+RUN pip install onecodex[all,reports]==v0.9.6
 RUN mkdir -p /usr/local/share/fonts \
     && cp /usr/local/lib/python3.8/site-packages/onecodex/assets/fonts/*.otf /usr/local/share/fonts \
     && fc-cache
