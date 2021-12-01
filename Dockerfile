@@ -39,13 +39,15 @@ RUN conda env create -f environment.yml
 # install artic into conda environment "artic"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
         && cd fieldbioinformatics \
-	&& conda env create -f environment.yml \
+        && git checkout 23a8460f5b881c5b2712c0381e0ec4dc84d38359 \
+      	&& conda env create -f environment.yml \
         && conda run -n artic python setup.py install \
         && conda clean -a
 
 # install pangolin into conda environment "pangolin"
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
+        && git checkout ca81e2cd633628ab4d02bb1965e4db67a700f2d0 \
         && conda env create -f environment.yml \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
@@ -53,7 +55,7 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
 # install nextclade
 RUN npm install --global @neherlab/nextclade
 
-# update pangolin database 2021-03-18
+# update pangolin database 2021-12-01
 RUN conda run -n pangolin pangolin --update
 
 # install dnaplotlib for creating the genome diagram
