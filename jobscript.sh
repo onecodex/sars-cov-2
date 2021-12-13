@@ -58,7 +58,7 @@ sed -i 's/&/; /g' variants.snpeff.tsv
 # needed by report
 echo "Getting depth using samtools"
 conda run -n report \
-  samtools depth covid19.bam > snps.depth
+  samtools depth -a covid19.bam > snps.depth
 
 # Count total mapped reads (can we get this from summing snps.depth)
 conda run -n report samtools view -F 2308 covid19.bam | wc -l > total_mapped_reads.txt

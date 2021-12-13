@@ -12,7 +12,7 @@ SARS-CoV-2 variant calling and consensus assembly pipeline for ARTIC v3 amplicon
 docker build -t covid19 .
 ```
 
-Run the pipeline in the Docker image:
+Run the pipeline in the Docker image (note that fastq files are stored in git lfs so you may need to `git lfs pull` before executing):
 
 ```sh
 docker \
@@ -23,10 +23,10 @@ docker \
   --entrypoint /bin/bash \
   --env prefix=test-covid19 \
   --env reference=reference/nCoV-2019.reference.fasta \
-  --env input_fastq=data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
   --env primer_bed_file=reference/artic-v1/ARTIC-V3.bed \
   covid19 \
-  jobscript.sh
+  jobscript.sh \
+  data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz
 ```
 
 For Oxford Nanopore:
@@ -41,13 +41,11 @@ docker \
   --env prefix=test-covid19 \
   --env INSTRUMENT_VENDOR="Oxford Nanopore" \
   --env reference=reference/nCoV-2019.reference.fasta \
-  --env input_fastq=data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz \
   --env primer_bed_file=reference/artic-v1/ARTIC-V3.bed \
   covid19 \
-  jobscript.sh
+  jobscript.sh \
+  data/twist-target-capture/RNA_control_spike_in_10_6_100k_reads.fastq.gz
 ```
-
-This currently produces a `consensus.fa` file, a `variants.vcf`, a BAM file (`covid19.bam`), nextstrain results (`nextstrain.json`) and pangolin results (`pangolin.csv`).
 
 # Development & Testing
 
