@@ -47,7 +47,7 @@ RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
 # install pangolin into conda environment "pangolin"
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
-        && git checkout ca81e2cd633628ab4d02bb1965e4db67a700f2d0 \
+        && git checkout a8ee7732d9c2c1bc1422c0900cff0e80aa051cea \
         && conda env create -f environment.yml \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
