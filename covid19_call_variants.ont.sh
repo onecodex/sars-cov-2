@@ -28,7 +28,7 @@ echo "[1] trimming/filtering reads with seqkit"
 source activate report
 
 # shellcheck disable=SC2002
-cat ${sample_filename} \
+cat "${sample_filename}" \
   | seqkit \
     seq \
       --min-len ${min_read_length} \
@@ -56,7 +56,7 @@ conda run -n artic \
   --read-file "${prefix}.filtered.fastq" \
   --no-longshot \
   --strict \
-  nCoV-2019/V${artic_primer_version} \
+  nCoV-2019/V"${artic_primer_version}" \
   "${prefix}"
 
 echo "[3] generating variants.tsv"
