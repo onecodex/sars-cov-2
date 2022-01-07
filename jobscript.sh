@@ -6,6 +6,7 @@ sample_filename="${1}"
 
 : "${INSTRUMENT_VENDOR:=Illumina}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
+: "${ARTIC_PRIMER_VERSION:=4}"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
@@ -15,12 +16,14 @@ echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 # covid19.bam (sorted+bai)
 # consensus.fa
 if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
-  covid19_call_variants.ont.sh "${sample_filename}"
+  covid19_call_variants.ont.sh \
+	  "${sample_filename}" \
+	  "${ARTIC_PRIMER_VERSION}"
 else
   covid19_call_variants.sh \
     /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    /reference/ARTIC-V3.bed
+    /reference/ARTIC-V${ARTIC_PRIMER_VERSION}.bed
 fi
 
 echo "Annotating VCF file using snpEff"

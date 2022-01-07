@@ -7,6 +7,9 @@
 
 set -e
 
+sample_filename="${1}"
+artic_primer_version="${2}"
+
 #### Default parameters
 
 : "${medaka_model:=r941_min_high_g360}" # Default Medaka model is for MinION (or GridION) R9.4.1 flowcells using the fast Guppy basecaller version 3.6.0, high accuracy base calling
@@ -25,7 +28,7 @@ echo "[1] trimming/filtering reads with seqkit"
 source activate report
 
 # shellcheck disable=SC2002
-cat "${1}" \
+cat ${sample_filename} \
   | seqkit \
     seq \
       --min-len ${min_read_length} \
@@ -52,7 +55,8 @@ conda run -n artic \
   --scheme-directory ./artic-ncov2019/primer_schemes \
   --read-file "${prefix}.filtered.fastq" \
   --no-longshot \
-  --strict nCoV-2019/V3 \
+  --strict \
+  nCoV-2019/V${artic_primer_version} \
   "${prefix}"
 
 echo "[3] generating variants.tsv"
