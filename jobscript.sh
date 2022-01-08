@@ -88,15 +88,8 @@ cp /reference/aa_codes.txt .
 
 echo "Generating notebook!"
 
-export INSTRUMENT_VENDOR
-export ONE_CODEX_REPORT_FILENAME
-export ARTIC_PRIMER_VERSION
-
-RESULTS_DIR="$(pwd)" \
-SAMPLE_PATH="${sample_filename}" \
-PYTHONWARNINGS="ignore" \
-GIT_DIR="/.git" \
-GIT_WORK_TREE="/" \
+# shellcheck disable=SC1000-SC9999
+RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" \
 conda run -n report jupyter \
       nbconvert \
       --execute \
