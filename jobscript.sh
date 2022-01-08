@@ -88,6 +88,10 @@ cp /reference/aa_codes.txt .
 
 echo "Generating notebook!"
 
+export INSTRUMENT_VENDOR
+export ONE_CODEX_REPORT_FILENAME
+export ARTIC_PRIMER_VERSION
+
 RESULTS_DIR="$(pwd)" \
 SAMPLE_PATH="${sample_filename}" \
 PYTHONWARNINGS="ignore" \
