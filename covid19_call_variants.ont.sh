@@ -9,6 +9,7 @@ set -e
 
 sample_filename="${1}"
 artic_primer_version="${2}"
+primer_scheme="nCoV-2019/V${artic_primer_version}"
 
 #### Default parameters
 
@@ -56,7 +57,7 @@ conda run -n artic \
   --read-file "${prefix}.filtered.fastq" \
   --no-longshot \
   --strict \
-  nCoV-2019/V"${artic_primer_version}" \
+  "${primer_scheme}" \
   "${prefix}"
 
 echo "[3] generating variants.tsv"

@@ -8,6 +8,8 @@ sample_filename="${1}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 : "${ARTIC_PRIMER_VERSION:=4}"
 
+BEDFILE="/reference/ARTIC-V${ARTIC_PRIMER_VERSION}.bed"
+
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 
@@ -23,7 +25,7 @@ else
   covid19_call_variants.sh \
     /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    /reference/ARTIC-V${ARTIC_PRIMER_VERSION}.bed
+    "${BEDFILE}"
 fi
 
 echo "Annotating VCF file using snpEff"
