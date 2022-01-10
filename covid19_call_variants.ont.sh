@@ -9,7 +9,12 @@ set -e
 
 sample_filename="${1}"
 artic_primer_version="${2}"
-primer_scheme="nCoV-2019/V${artic_primer_version}"
+
+if [ "$artic_primer_version" == "4.1" ]; then
+	primer_scheme="reference/V${artic_primer_version}"
+else
+	primer_scheme="nCoV-2019/V${artic_primer_version}"
+fi
 
 #### Default parameters
 
@@ -53,7 +58,6 @@ conda run -n artic \
   --medaka-model "${medaka_model}" \
   --normalise "${normalized_coverage}" \
   --threads "${threads}" \
-  --scheme-directory ./artic-ncov2019/primer_schemes \
   --read-file "${prefix}.filtered.fastq" \
   --no-longshot \
   --strict \

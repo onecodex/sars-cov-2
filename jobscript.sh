@@ -6,7 +6,7 @@ sample_filename="${1}"
 
 : "${INSTRUMENT_VENDOR:=Illumina}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
-: "${ARTIC_PRIMER_VERSION:=4}"
+: "${ARTIC_PRIMER_VERSION:=4.1}"
 
 BEDFILE="/reference/ARTIC-V${ARTIC_PRIMER_VERSION}.bed"
 
