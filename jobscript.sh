@@ -6,6 +6,9 @@ sample_filename="${1}"
 
 : "${INSTRUMENT_VENDOR:=Illumina}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
+: "${ARTIC_PRIMER_VERSION:=4.1}"
+
+BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
@@ -15,12 +18,14 @@ echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
 # covid19.bam (sorted+bai)
 # consensus.fa
 if [ "${INSTRUMENT_VENDOR}" == "Oxford Nanopore" ]; then
-  covid19_call_variants.ont.sh "${sample_filename}"
+  covid19_call_variants.ont.sh \
+	  "${sample_filename}" \
+	  "${ARTIC_PRIMER_VERSION}"
 else
   covid19_call_variants.sh \
     /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    /reference/ARTIC-V3.bed
+    "${BEDFILE}"
 fi
 
 echo "Annotating VCF file using snpEff"
@@ -85,18 +90,7 @@ cp /reference/aa_codes.txt .
 
 echo "Generating notebook!"
 
-RESULTS_DIR="$(pwd)" \
-SAMPLE_PATH="${sample_filename}" \
-PYTHONWARNINGS="ignore" \
-GIT_DIR="/.git" \
-GIT_WORK_TREE="/" \
-conda run -n report jupyter \
-      nbconvert \
-      --execute \
-      --to onecodex_pdf \
-      --ExecutePreprocessor.timeout=-1 \
-      --output="${ONE_CODEX_REPORT_FILENAME}" \
-      --output-dir="." \
-      report.ipynb
+#shellcheck disable=SC1000-SC9999
+RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" conda run -n report jupyter nbconvert --execute --to onecodex_pdf --ExecutePreprocessor.timeout=-1 --output="${ONE_CODEX_REPORT_FILENAME}" --output-dir="." report.ipynb
 
 echo "Finished!"

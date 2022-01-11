@@ -230,7 +230,7 @@ def run_call_variants_illumina(tmp_path):
             "/repo/covid19_call_variants.sh",
             "/reference/nCoV-2019.reference.fasta",
             input_filename,
-            "/reference/ARTIC-V3.bed",
+            "/reference/ARTIC-V4.bed",
         ]
 
         run_docker_container(tmp_path, container_command)
@@ -245,6 +245,7 @@ def run_call_variants_ont(tmp_path):
             "/bin/bash",
             "/repo/covid19_call_variants.ont.sh",
             input_filename,
+            "4.1",
         ]
 
         run_docker_container(tmp_path, container_command)

@@ -22,11 +22,6 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
         args: [--allow-multiple-documents]
-  - repo: git://github.com/detailyang/pre-commit-shell
-    rev: 1.0.5
-    hooks:
-    - id: shell-lint
-      args: [--format=json]
   - repo: https://github.com/kynan/nbstripout
     rev: 0.3.9
     hooks:
