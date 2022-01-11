@@ -4,7 +4,7 @@ Version v0.5.0
 
 [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/test/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/pre-commit/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Docker Repository on Quay](https://quay.io/repository/refgenomics/covid19/status "Docker Repository on Quay")](https://quay.io/repository/refgenomics/covid19)
 
-This pipeline performs consensus assembly and variant calling for amplicon sequencing data (Illumina or Oxford Nanopore) generated using the [`ARTIC protocol`](https://artic.network/ncov-2019). The user can specify an ARTIC primer set (required for trimming primers from the alignment); the primer set is assumed to be ARTIC V4.1 if not specified.
+This pipeline performs consensus assembly and variant calling for amplicon sequencing data (Illumina or Oxford Nanopore) generated using the [`ARTIC protocol`](https://artic.network/ncov-2019). The user can specify a primer set to be used for trimming alignments; this is assumed to be **ARTIC V4.1** if not specified.
 
 # Pipeline overview
 
@@ -12,7 +12,7 @@ The pipeline takes in either Oxford Nanopore or Illumina FASTQ data and processe
 
 1. Map reads to the Wuhan-Hu-1 reference and trim ARTIC primer sequences
 2. Generate a consensus sequence (bcftools for Illumina; medaka for Oxford Nanopore)
-3. Call variants with a limit of 200x coverage, as recommended by the ARTIC network. While indels and SNVs are reported for Illumina data, only SNVs are reported for Oxford Nanopore based on benchmarking studies that indicate small indel detection is unreliable (
+3. Call variants with a limit of 200x coverage, as recommended by the ARTIC network. While indels and SNVs are reported for Illumina data, only SNVs are reported for Oxford Nanopore based on benchmarking studies that indicate [`small indel detection is unreliable.`](https://doi.org/10.1038/s41467-020-20075-6)
 4. Assign Pangolin and Nextclade lineages
 5. Predict amino acid mutations
 6. Predict consequences of compound variants (ex: adjacent SNVs on the same codon; frame-shifting indels followed by frame-restoring indels)
