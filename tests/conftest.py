@@ -245,7 +245,7 @@ def run_call_variants_ont(tmp_path):
             "/bin/bash",
             "/repo/covid19_call_variants.ont.sh",
             input_filename,
-            "4",
+            "4.1",
         ]
 
         run_docker_container(tmp_path, container_command)

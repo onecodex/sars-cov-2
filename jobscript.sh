@@ -8,7 +8,7 @@ sample_filename="${1}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 : "${ARTIC_PRIMER_VERSION:=4.1}"
 
-BEDFILE="/reference/ARTIC-V${ARTIC_PRIMER_VERSION}.bed"
+BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"

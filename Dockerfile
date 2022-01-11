@@ -90,3 +90,7 @@ COPY reference /reference
 # ARTIC's vcf_filter.py breaks when a variant's call score is "."
 # I fixed this in reference/vcf_filter_edited.py
 COPY /reference/vcf_filter.edited.py /root/miniconda3/envs/artic/lib/python3.6/site-packages/artic-1.2.1-py3.6.egg/artic/vcf_filter.py
+
+# Add ARTIC 4.1 patch as a primer scheme
+RUN mkdir /primer_schemes
+COPY /reference/primer_schemes/ /primer_schemes/

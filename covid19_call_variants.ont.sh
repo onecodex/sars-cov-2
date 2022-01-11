@@ -9,12 +9,7 @@ set -e
 
 sample_filename="${1}"
 artic_primer_version="${2}"
-
-if [ "$artic_primer_version" == "4.1" ]; then
-	primer_scheme="reference/V${artic_primer_version}"
-else
-	primer_scheme="nCoV-2019/V${artic_primer_version}"
-fi
+artic_primer_scheme="V${artic_primer_version}"
 
 #### Default parameters
 
@@ -51,17 +46,18 @@ source deactivate
 #### 2. Alignment, variant calling, and consensus creation
 # minimap2 alignment, Medaka for consensus creation and variant calling (experimental)
 
-echo "[2] running ARTIC pipeline"
+echo "[2] running ARTIC pipeline with ${artic_primer_scheme} primers"
 conda run -n artic \
   artic minion \
   --medaka \
   --medaka-model "${medaka_model}" \
   --normalise "${normalized_coverage}" \
+  --scheme-directory /primer_schemes \
   --threads "${threads}" \
   --read-file "${prefix}.filtered.fastq" \
   --no-longshot \
   --strict \
-  "${primer_scheme}" \
+  nCoV-2019/V4.1 \
   "${prefix}"
 
 echo "[3] generating variants.tsv"
