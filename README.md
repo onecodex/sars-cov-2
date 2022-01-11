@@ -8,7 +8,7 @@ This pipeline performs consensus assembly and variant calling for amplicon seque
 
 # Pipeline overview
 
-The pipeline takes in either Oxford Nanopore or Illumina FASTQ data and processes them as follows:
+The pipeline takes in a single FASTQ file (interleaved if Illumina) and processes it as follows:
 
 1. Map reads to the Wuhan-Hu-1 reference and trim ARTIC primer sequences
 2. Generate a consensus sequence (bcftools for Illumina; medaka for Oxford Nanopore)
