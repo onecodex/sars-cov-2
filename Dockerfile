@@ -39,7 +39,7 @@ RUN conda env create -f environment.yml
 # install artic into conda environment "artic"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
         && cd fieldbioinformatics \
-        && git checkout 23a8460f5b881c5b2712c0381e0ec4dc84d38359 \
+        && git checkout 1.2.1 \
       	&& conda env create -f environment.yml \
         && conda run -n artic python setup.py install \
         && conda clean -a
@@ -47,7 +47,7 @@ RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
 # install pangolin into conda environment "pangolin"
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
-        && git checkout a8ee7732d9c2c1bc1422c0900cff0e80aa051cea \
+        && git checkout v3.1.17 \
         && conda env create -f environment.yml \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
