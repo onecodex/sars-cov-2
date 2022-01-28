@@ -8,7 +8,8 @@ sample_filename="${1}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 : "${ARTIC_PRIMER_VERSION:=4.1}"
 
-BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
+PRIMER_BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
+INSERT_BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.insert.bed"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
@@ -25,7 +26,7 @@ else
   covid19_call_variants.sh \
     /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    "${BEDFILE}"
+    "${PRIMER_BEDFILE}"
 fi
 
 echo "Annotating VCF file using snpEff"
@@ -65,8 +66,11 @@ echo "Getting depth using samtools"
 conda run -n report \
   samtools depth -a covid19.bam > snps.depth
 
-# Count total mapped reads (can we get this from summing snps.depth)
+# Count total mapped reads
 conda run -n report samtools view -F 2308 covid19.bam | wc -l > total_mapped_reads.txt
+
+# Generate per-insert depth stats and boxplot
+conda run -n insert-cov insert_coverage_stats.py ${INSERT_BEDFILE} covid19.bam
 
 # call strains
 

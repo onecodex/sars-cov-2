@@ -33,8 +33,12 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 ENV PATH=$PATH:/root/miniconda3/bin/
 
 # install "report" environment's dependencies
-COPY environment.yml /
+COPY envs/environment.yml /
 RUN conda env create -f environment.yml
+
+# install "report" environment's dependencies
+COPY envs/insert-cov-env.yml /
+RUN conda env create -f insert-cov-env.yml
 
 # install artic into conda environment "artic"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
@@ -70,17 +74,17 @@ RUN mkdir -p /usr/local/share/fonts \
     && fc-cache
 
 # install snpeff
-RUN wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip \
-        && unzip snpEff_latest_core.zip \
-	&& mv snpEff /usr/local/bin \
-        && rm snpEff_latest_core.zip
-
+RUN curl -k -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_5covid19_core.zip/download --output snpEff_v4_5covid19_core.zip\
+        && unzip snpEff_v4_5covid19_core.zip \
+        && mv snpEff /usr/local/bin \
+        && rm snpEff_v4_5covid19_core.zip
 
 ADD covid19_call_variants.sh /usr/local/bin/
 ADD covid19_call_variants.ont.sh /usr/local/bin/
 ADD post_process_variants.sh /usr/local/bin/
 ADD jobscript.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
+ADD insert_coverage_stats.py /usr/local/bin
 ADD report.ipynb /
 
 # so we can include git hash in report for tracking

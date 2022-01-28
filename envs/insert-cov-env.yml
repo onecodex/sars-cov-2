@@ -1,0 +1,10 @@
+name: insert-cov
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  - bedtools
+  - seaborn

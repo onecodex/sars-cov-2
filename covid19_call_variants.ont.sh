@@ -60,8 +60,6 @@ conda run -n artic \
   nCoV-2019/V4.1 \
   "${prefix}"
 
-echo "[3] generating variants.tsv"
-
 #### 3. Variant annotation
 gunzip "${prefix}.pass.vcf.gz"
 
