@@ -135,7 +135,7 @@ def run_art(tmp_path):
                 "/pytest",
                 IMAGE,
                 *(
-                    *("conda", "run", "-n", "report"),
+                    *("conda", "run", "-n", "jobscript-env"),
                     "art_illumina",
                     "--paired",
                     *("--seqSys", system),
@@ -260,7 +260,7 @@ def run_render_notebook(tmp_path):
         # the notebook
         shutil.copy("report.ipynb", tmp_path / "report.ipynb")
         container_command = [
-            *("conda", "run", "-n", "report"),
+            *("conda", "run", "-n", "jobscript-env"),
             "jupyter",
             "nbconvert",
             "--execute",
