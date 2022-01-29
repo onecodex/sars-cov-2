@@ -6,7 +6,7 @@
 # reference/artic-v1/ARTIC-V1.bed`
 
 # shellcheck disable=SC1091
-source activate report # noqa
+source activate jobscript-env # noqa
 
 set -eou pipefail
 

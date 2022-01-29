@@ -32,13 +32,9 @@ RUN curl https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 # put system path first so that conda doesn't override python
 ENV PATH=$PATH:/root/miniconda3/bin/
 
-# install "report" environment's dependencies
-COPY envs/environment.yml /
+# install environment's dependencies
+COPY environment.yml /
 RUN conda env create -f environment.yml
-
-# install "report" environment's dependencies
-COPY envs/insert-cov-env.yml /
-RUN conda env create -f insert-cov-env.yml
 
 # install artic into conda environment "artic"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \

@@ -1,4 +1,4 @@
-name: report
+name: jobscript-env
 
 channels:
   - conda-forge
@@ -6,6 +6,8 @@ channels:
   - defaults
 
 dependencies:
+  - bedtools
+  - seaborn
   - art=2016.06.05
   - ivar
   - minimap2

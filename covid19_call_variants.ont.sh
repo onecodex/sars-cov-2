@@ -26,7 +26,7 @@ artic_primer_scheme="V${artic_primer_version}"
 
 echo "[1] trimming/filtering reads with seqkit"
 # shellcheck disable=SC1091
-source activate report
+source activate jobscript-env
 
 # shellcheck disable=SC2002
 cat "${sample_filename}" \
