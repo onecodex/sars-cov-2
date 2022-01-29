@@ -8,8 +8,8 @@ sample_filename="${1}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 : "${ARTIC_PRIMER_VERSION:=4.1}"
 
-PRIMER_BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
-INSERT_BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.insert.bed"
+PRIMER_BEDFILE="/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
+INSERT_BEDFILE="/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.insert.bed"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
