@@ -39,10 +39,9 @@ def run(args):
         "-b",
         args.alignments,
     ]
-    a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    b = StringIO(a.communicate()[0].decode("utf-8"))
+    a = subprocess.run(cmd, capture_output=True, check=True)
     df = pd.read_csv(
-        b,
+        StringIO(a.stdout.decode("utf-8")),
         sep="\t",
         header=None,
         names=[
@@ -56,7 +55,6 @@ def run(args):
             "depth",
         ],
     )
-
     # Generate summary statistics of coverage by insert and save to file
     insert_stats_data = []
     for insert in df["region_name"].unique():
