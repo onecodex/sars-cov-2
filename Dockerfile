@@ -53,7 +53,7 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
         && conda clean -a
 
 # install nextclade
-RUN npm install --global @neherlab/nextclade
+RUN npm install --global @neherlab/nextclade@0.14.4
 
 # update pangolin database 2021-12-01
 RUN conda run -n pangolin pangolin --update
