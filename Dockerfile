@@ -39,7 +39,7 @@ RUN conda env create -f environment.yml
 # install artic into conda environment "artic"
 RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
         && cd fieldbioinformatics \
-        && git checkout 1.10.1 \
+        && git checkout 1.2.1 \
       	&& conda env create -f environment.yml \
         && conda run -n artic python setup.py install \
         && conda clean -a
