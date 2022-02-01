@@ -26,7 +26,7 @@ artic_primer_scheme="V${artic_primer_version}"
 
 echo "[1] trimming/filtering reads with seqkit"
 # shellcheck disable=SC1091
-source activate report
+source activate jobscript-env
 
 # shellcheck disable=SC2002
 cat "${sample_filename}" \
@@ -59,8 +59,6 @@ conda run -n artic \
   --strict \
   nCoV-2019/V4.1 \
   "${prefix}"
-
-echo "[3] generating variants.tsv"
 
 #### 3. Variant annotation
 gunzip "${prefix}.pass.vcf.gz"

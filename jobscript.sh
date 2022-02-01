@@ -8,7 +8,8 @@ sample_filename="${1}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 : "${ARTIC_PRIMER_VERSION:=4.1}"
 
-BEDFILE="/reference/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
+PRIMER_BEDFILE="/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
+INSERT_BEDFILE="/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.insert.bed"
 
 echo "--- sample_filename=${sample_filename}"
 echo "--- INSTRUMENT_VENDOR=${INSTRUMENT_VENDOR}"
@@ -25,7 +26,7 @@ else
   covid19_call_variants.sh \
     /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    "${BEDFILE}"
+    "${PRIMER_BEDFILE}"
 fi
 
 echo "Annotating VCF file using snpEff"
@@ -41,7 +42,7 @@ java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar build -c /reference/snpEffect.
 java -Xmx4g -jar /usr/local/bin/snpEff/snpEff.jar ann NC_045512.2 -verbose -config /reference/snpEffect.config -fastaProt variants.snpeff.vcf.faa -csvStats variants.snpeff.vcf.stats variants.vcf > variants.snpeff.vcf
 
 # run bcftools csq to link consecutive SNPs on the same codon (BCSQ field)
-conda run -n report bcftools csq --force --phase a -f /reference/NC_045512.2.reference.fasta -g /reference/data/NC_045512.2/genes.gff -Ov variants.snpeff.vcf -o variants.snpeff.csq.vcf
+conda run -n jobscript-env bcftools csq --force --phase a -f /reference/NC_045512.2.reference.fasta -g /reference/data/NC_045512.2/genes.gff -Ov variants.snpeff.vcf -o variants.snpeff.csq.vcf
 
 # Extract fields of interest from annotated vcf into a tsv, treating SR and DP4 as essentially identical information
 # In the Medaka-generated vcf for ONT data:
@@ -62,11 +63,14 @@ sed -i 's/&/; /g' variants.snpeff.tsv
 
 # needed by report
 echo "Getting depth using samtools"
-conda run -n report \
+conda run -n jobscript-env \
   samtools depth -a covid19.bam > snps.depth
 
-# Count total mapped reads (can we get this from summing snps.depth)
-conda run -n report samtools view -F 2308 covid19.bam | wc -l > total_mapped_reads.txt
+# Count total mapped reads
+conda run -n jobscript-env samtools view -F 2308 covid19.bam | wc -l > total_mapped_reads.txt
+
+# Generate per-insert depth stats and boxplot
+conda run -n jobscript-env insert_coverage_stats.py ${INSERT_BEDFILE} covid19.bam
 
 # call strains
 
@@ -91,6 +95,6 @@ cp /reference/aa_codes.txt .
 echo "Generating notebook!"
 
 #shellcheck disable=SC1000-SC9999
-RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" conda run -n report jupyter nbconvert --execute --to onecodex_pdf --ExecutePreprocessor.timeout=-1 --output="${ONE_CODEX_REPORT_FILENAME}" --output-dir="." report.ipynb
+RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" conda run -n jobscript-env jupyter nbconvert --execute --to onecodex_pdf --ExecutePreprocessor.timeout=-1 --output="${ONE_CODEX_REPORT_FILENAME}" --output-dir="." report.ipynb
 
 echo "Finished!"
