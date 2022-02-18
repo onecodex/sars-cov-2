@@ -1,6 +1,6 @@
 # SARS-CoV-2 variant calling
 
-Version v0.6.0
+Version v0.6.1
 
 [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/test/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/pre-commit/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Docker Repository on Quay](https://quay.io/repository/refgenomics/covid19/status "Docker Repository on Quay")](https://quay.io/repository/refgenomics/covid19)
 
