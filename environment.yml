@@ -14,4 +14,4 @@ dependencies:
   - samtools
   - seqtk
   - seqkit
-  - bcftools=1.15
+  - bcftools>=1.15
