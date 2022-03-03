@@ -231,7 +231,7 @@ def run_call_variants_illumina(tmp_path):
             "/reference/nCoV-2019.reference.fasta",
             input_filename,
             "/reference/ARTIC-V4.bed",
-            10,
+            "10",
         ]
 
         run_docker_container(tmp_path, container_command)
