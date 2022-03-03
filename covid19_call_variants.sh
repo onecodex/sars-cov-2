@@ -14,6 +14,7 @@ set -eou pipefail
 : "${reference:=${1}}"
 : "${input_fastq:=${2}}"
 : "${primer_bed_file:=${3}}"
+: "${consensus_mask_depth:=${4}}"
 
 # defaults
 
@@ -114,8 +115,8 @@ bcftools index "${prefix}.vcf.gz"
 
 # vcf is 1-based while bedgraph is 0-based; thus the somewhat convoluted path to mask.bed
 bcftools query -f'%CHROM\t%POS0\t%END\n' ${prefix}.vcf.gz > variants.bed
-# get low coverage sites (<10) in bedgraph format
-bedtools genomecov -bga -ibam ${prefix}.sorted.bam | awk '$4 < 10' > low_coverage_sites.bed
+# get low coverage sites in bedgraph format
+bedtools genomecov -bga -ibam ${prefix}.sorted.bam | awk -v var="$consensus_mask_depth" '$4 < var' > low_coverage_sites.bed
 bedtools subtract -a low_coverage_sites.bed -b variants.bed > mask.bed
 # generate consensus and rename header
 bcftools consensus \

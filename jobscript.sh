@@ -7,6 +7,7 @@ sample_filename="${1}"
 : "${INSTRUMENT_VENDOR:=Illumina}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
 : "${ARTIC_PRIMER_VERSION:=4.1}"
+: "${CONSENSUS_MASK_DEPTH:=10}"
 
 PRIMER_BEDFILE="/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.scheme.bed"
 INSERT_BEDFILE="/primer_schemes/nCoV-2019/V${ARTIC_PRIMER_VERSION}/nCoV-2019.insert.bed"
@@ -26,7 +27,8 @@ else
   covid19_call_variants.sh \
     /reference/nCoV-2019.reference.fasta \
     "${sample_filename}" \
-    "${PRIMER_BEDFILE}"
+    "${PRIMER_BEDFILE}" \
+    "${CONSENSUS_MASK_DEPTH}"
 fi
 
 echo "Annotating VCF file using snpEff"
