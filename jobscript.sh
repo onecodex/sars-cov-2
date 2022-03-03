@@ -102,7 +102,6 @@ RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GI
 echo "Removing unnecessary files"
 rm -f aa_codes.txt \
 	annot_table.orfs.txt \
-	covid19.bam.bai \
 	low_complexity_regions.txt \
 	low_coverage_sites.bed \
 	mask.bed \
