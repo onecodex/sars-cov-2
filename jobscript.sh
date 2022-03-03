@@ -99,4 +99,26 @@ echo "Generating notebook!"
 #shellcheck disable=SC1000-SC9999
 RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" conda run -n jobscript-env jupyter nbconvert --execute --to onecodex_pdf --ExecutePreprocessor.timeout=-1 --output="${ONE_CODEX_REPORT_FILENAME}" --output-dir="." report.ipynb
 
+echo "Removing unnecessary files"
+rm -f aa_codes.txt \
+	annot_table.orfs.txt \
+	covid19.bam.bai \
+	low_complexity_regions.txt \
+	low_coverage_sites.bed \
+	mask.bed \
+	report.ipynb \
+	total_mapped_reads.txt \
+	trimmed-reference.fasta \
+	variants.bed \
+	variants.raw.vcf \
+	variants.snpeff.csq.vcf.gz.tbi \
+	variants.snpeff.tsv \
+	variants.snpeff.vcf \
+	variants.snpeff.vcf.faa \
+	variants.snpeff.vcf.stats \
+	variants.snpeff.vcf.stats.genes.txt \
+	variants.vcf
+
+mv variants.snpeff.csq.vcf variants.vcf
+
 echo "Finished!"
