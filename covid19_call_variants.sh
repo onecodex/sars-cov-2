@@ -14,6 +14,7 @@ set -eou pipefail
 : "${reference:=${1}}"
 : "${input_fastq:=${2}}"
 : "${primer_bed_file:=${3}}"
+: "${consensus_mask_depth:=${4}}"
 
 # defaults
 
@@ -108,8 +109,20 @@ bcftools view \
 # in the special indexed gzip format (can't use regular gzip)
 bcftools index "${prefix}.vcf.gz"
 
+# We want to generate a consensus sequence with:
+# 1. well-supported deletions marked with '-'
+# 2. low-coverage regions masked with N
+
+# vcf is 1-based while bedgraph is 0-based; thus the somewhat convoluted path to mask.bed
+bcftools query -f'%CHROM\t%POS0\t%END\n' ${prefix}.vcf.gz > variants.bed
+# get low coverage sites in bedgraph format
+bedtools genomecov -bga -ibam ${prefix}.sorted.bam | awk -v var="$consensus_mask_depth" '$4 < var' > low_coverage_sites.bed
+bedtools subtract -a low_coverage_sites.bed -b variants.bed > mask.bed
+# generate consensus and rename header
 bcftools consensus \
   --fasta-ref "${reference}" \
+  --mark-del '-' \
+  -m mask.bed \
   "${prefix}.vcf.gz" \
   | sed \
     '/>/ s/$/ | One Codex consensus sequence/' \
