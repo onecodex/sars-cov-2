@@ -80,12 +80,9 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
         && conda clean -a
 
 
-# install nextclade
-#adding downloading sars-cov-2 dataset
-#old:
-# RUN npm install --global @neherlab/nextclade@0.14.4
+# install nextclade & download sars-cov-2 dataset
 
-RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/latest/download/nextclade-x86_64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
+RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.8.0/nextclade-aarch64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
 RUN /usr/local/bin/nextclade dataset get --name 'sars-cov-2' --output-dir '/usr/local/bin/data/sars-cov-2'     
 
 # Install onecodex_pdf export option
