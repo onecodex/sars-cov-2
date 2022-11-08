@@ -7,6 +7,7 @@ import shutil
 import pytest
 
 
+
 def test_jobscript_ont(tmp_path, run_jobscript):
     run_jobscript(
         input_filename="/repo/data/ARTIC/ERR5284916.ONT.ARTICv3.40k.fastq.gz",

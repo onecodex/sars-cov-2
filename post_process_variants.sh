@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# Install Nextclade
-npm install --global @neherlab/nextclade
+echo "Assigning Pango Lineage"
+conda run -n pangolin pangolin "${1}" --outfile pangolin.csv
 
 # Assign NextClade clade
 echo "Assigning NextClade Clade"
-nextclade --input-fasta "${1}" --output-tsv nextclade.tsv --output-json nextclade.json
 
-# TODO: copy pangolin database data somewhere.
-echo "Assigning Pango Lineage"
-conda run -n pangolin pangolin "${1}" --outfile pangolin.csv
+/usr/local/bin/nextclade run "${1}" --input-dataset /usr/local/bin/data/sars-cov-2 --output-tsv nextclade.tsv --output-json nextclade.json   
+

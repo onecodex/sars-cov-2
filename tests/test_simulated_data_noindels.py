@@ -50,3 +50,6 @@ def test_snps_only_fastq(
     reference = list(SeqIO.parse(f"{tmp_path}/nCoV-2019.reference_mutated_1.fasta", "fasta"))[0]
     consensus = list(SeqIO.parse(f"{tmp_path}/consensus.fa", "fasta"))[0]
     assert consensus.seq[50:-120] in reference.seq
+
+
+
