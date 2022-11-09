@@ -82,8 +82,8 @@ RUN git clone https://github.com/cov-lineages/pangolin.git \
 
 # install nextclade & download sars-cov-2 dataset
 
-RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.8.0/nextclade-aarch64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
-RUN /usr/local/bin/nextclade dataset get --name 'sars-cov-2' --output-dir '/usr/local/bin/data/sars-cov-2'     
+RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.8.0/nextclade-x86_64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
+RUN /usr/local/bin/nextclade dataset get --name 'sars-cov-2' --output-dir '/usr/local/bin/data/sars-cov-2'
 
 # Install onecodex_pdf export option
 RUN pip install onecodex[all,reports]==v0.10.0
