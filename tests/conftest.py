@@ -216,6 +216,7 @@ def run_jobscript(tmp_path):
         run_docker_container(
             tmp_path, container_command, env={"INSTRUMENT_VENDOR": instrument_vendor}
         )
+
     return _run_jobscript
 
 

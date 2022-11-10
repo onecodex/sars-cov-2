@@ -64,7 +64,17 @@ def run(args):
     insert_stats_df = pd.DataFrame(insert_stats_data).reset_index(drop=True)
     insert_stats_df.rename(columns={"count": "insert_length"}, inplace=True)
     insert_stats_df = insert_stats_df[
-        ["insert_name", "insert_length", "mean", "std", "min", "25%", "50%", "75%", "max"]
+        [
+            "insert_name",
+            "insert_length",
+            "mean",
+            "std",
+            "min",
+            "25%",
+            "50%",
+            "75%",
+            "max",
+        ]
     ]
     insert_stats_df.to_csv("depth_by_insert_stats.tsv", index=False, sep="\t")
 
