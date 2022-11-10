@@ -16,7 +16,7 @@ def test_jobscript_ont(tmp_path, run_jobscript):
 
     assert os.path.exists(tmp_path / "report.pdf")
 
-    shutil.copy(tmp_path / "report.pdf", f"report-ont.pdf-{num_subs}_subs.pdf")
+    shutil.copy(tmp_path / "report.pdf", "report-ont.pdf")
 
 @pytest.mark.parametrize("num_subs", [0, 3])
 def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, num_subs):

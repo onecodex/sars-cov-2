@@ -58,8 +58,6 @@ RUN curl -k -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_5covid19_
         && rm snpEff_v4_5covid19_core.zip
 
 
-# so we can include git hash in report for tracking
-COPY .git /.git
 COPY reference /reference
 
 # ARTIC's vcf_filter.py breaks when a variant's call score is "."
@@ -103,3 +101,9 @@ ADD post_process_variants.sh /usr/local/bin/
 ADD generate_tsv.py /usr/local/bin
 ADD insert_coverage_stats.py /usr/local/bin
 ADD report.ipynb /
+
+RUN apt-get update \
+    && rm -rf ~/.cache/matplotlib
+
+# so we can include git hash in report for tracking
+COPY .git /.git
