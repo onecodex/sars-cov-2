@@ -9,18 +9,18 @@ jobs:
   integration:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 1
           lfs: true
 
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
 
       - name: Cache virtualenv
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache-pip
         with:
           path: venv
