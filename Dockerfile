@@ -96,8 +96,5 @@ ADD generate_tsv.py /usr/local/bin
 ADD insert_coverage_stats.py /usr/local/bin
 ADD report.ipynb /
 
-RUN apt-get update \
-    && rm -rf ~/.cache/matplotlib
-
 # so we can include git hash in report for tracking
 COPY .git /.git
