@@ -78,7 +78,9 @@ conda run -n jobscript-env insert_coverage_stats.py ${INSERT_BEDFILE} covid19.ba
 
 # Assign NextClade clade
 echo "Assigning NextClade Clade"
-nextclade --input-fasta consensus.fa --output-tsv nextclade.tsv --output-json nextclade.json
+
+#adding new arg for dataset 'sars-cov-2', 'run' and removing --input-fasta since no longer supported
+/usr/local/bin/nextclade run    --input-dataset /usr/local/bin/data/sars-cov-2    --output-tsv nextclade.tsv --output-json nextclade.json   consensus.fa
 
 # Assign Pango lineage
 

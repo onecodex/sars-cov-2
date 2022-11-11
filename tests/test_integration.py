@@ -22,9 +22,9 @@ def test_jobscript_ont(tmp_path, run_jobscript):
 def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, num_subs):
     # generate some data
     run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=num_subs)
-    run_art(coverage=15)
+    run_art(coverage=30)
     run_jobscript(input_filename="simulated_reads.fastq.gz")
 
     assert os.path.exists(tmp_path / "report.pdf")
 
-    shutil.copy(tmp_path / "report.pdf", "report-illumina.pdf")
+    shutil.copy(tmp_path / "report.pdf", f"report-illumina-{num_subs}_subs.pdf")
