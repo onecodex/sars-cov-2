@@ -24,7 +24,7 @@ def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, n
     run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=num_subs)
     run_art(coverage=30)
     run_jobscript(input_filename="simulated_reads.fastq.gz")
-    
+
     assert os.path.exists(tmp_path / "report.pdf")
 
     shutil.copy(tmp_path / "report.pdf", f"report-illumina-{num_subs}_subs.pdf")
@@ -42,5 +42,5 @@ def test_jobscript_illumina_nc_error(tmp_path, run_jobscript):
     assert os.path.exists(tmp_path / "nextclade.json")
 
     shutil.copy(tmp_path / "report.pdf", "report-illumina-nc_error.pdf")
-    
+
     shutil.copy(tmp_path / "nextclade.json", "report-illumina-nc_error_nextclade.json")
