@@ -13,6 +13,12 @@ jobs:
     environment: production
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          lfs: true
+
+    steps:
       - name: Show the secret
         run: |
           echo "Super secret value: ${{ secrets.SUPER_SECRET_VALUE }}"
