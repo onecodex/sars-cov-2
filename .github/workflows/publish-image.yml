@@ -16,10 +16,6 @@ jobs:
           fetch-depth: 1
           lfs: true
 
-      - name: Show the secret
-        run: |
-          echo "Super secret value: ${{ secrets.SUPER_SECRET_VALUE }}"
-
       - name: Login to Quay
         shell: bash
         run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} quay.io --password-stdin
