@@ -4,7 +4,7 @@ on:
     branches:
       - master
 env:
-  REPOSITORY: quay.io/refgenomics/covid19
+  IMAGE_BASE: quay.io/refgenomics/covid19
 
 jobs:
   publish-to-quay:
@@ -21,22 +21,20 @@ jobs:
         run: echo ${{ secrets.QUAY_PASSWORD }} | docker login -u ${{ secrets.QUAY_USERNAME }} quay.io --password-stdin
 
       - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-
-      - name: Print Tag
-        shell: bash
-        run: echo "--- building & pushing ${REPOSITORY}:${{env.RELEASE_VERSION}}"
+        run: |
+          echo "--- RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "--- building & pushing ${IMAGE_BASE}:${{env.RELEASE_VERSION}}"
 
       - name: Docker build
         shell: bash
         run: |
           export DOCKER_BUILDKIT=1
           docker build \
-            -t ${REPOSITORY}:${{env.RELEASE_VERSION}} \
+            -t ${IMAGE_BASE}:${{env.RELEASE_VERSION}} \
             --build-arg BUILDKIT_INLINE_CACHE=1 \
-            --cache-from ${REPOSITORY}:${{env.RELEASE_VERSION}} .
+            --cache-from ${IMAGE_BASE}:${{env.RELEASE_VERSION}} .
 
       - name: Push to quay
         shell: bash
         run: |
-          docker push ${REPOSITORY}:${{env.RELEASE_VERSION}}
+          docker push ${IMAGE_BASE}:${{env.RELEASE_VERSION}}
