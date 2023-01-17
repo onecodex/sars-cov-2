@@ -67,13 +67,13 @@ COPY /reference/primer_schemes/ /primer_schemes/
 # install pangolin into conda environment "pangolin"
 RUN git clone https://github.com/cov-lineages/pangolin.git \
         && cd pangolin \
-        && git checkout v4.1.3 \
+        && git checkout v4.2 \
         && conda env create -f environment.yml \
         && conda run -n pangolin python setup.py install \
         && conda clean -a
 
 # install nextclade & download sars-cov-2 dataset
-RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.8.0/nextclade-x86_64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
+RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.9.1/nextclade-x86_64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
 RUN /usr/local/bin/nextclade dataset get --name 'sars-cov-2' --output-dir '/usr/local/bin/data/sars-cov-2'
 
 # Install onecodex_pdf export option
