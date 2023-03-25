@@ -6,6 +6,7 @@ sample_filename="${1}"
 
 : "${INSTRUMENT_VENDOR:=Illumina}"
 : "${ONE_CODEX_REPORT_FILENAME:=report.pdf}"
+: "${ONE_CODEX_REPORT_LOGO:=}"
 : "${ARTIC_PRIMER_VERSION:=4.1}"
 : "${CONSENSUS_MASK_DEPTH:=10}"
 
@@ -99,7 +100,7 @@ cp /reference/aa_codes.txt .
 echo "Generating notebook!"
 
 #shellcheck disable=SC1000-SC9999
-RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" conda run -n jobscript-env jupyter nbconvert --execute --to onecodex_pdf --ExecutePreprocessor.timeout=-1 --output="${ONE_CODEX_REPORT_FILENAME}" --output-dir="." report.ipynb
+RESULTS_DIR="$(pwd)" SAMPLE_PATH="${sample_filename}" PYTHONWARNINGS="ignore" GIT_DIR="/.git" GIT_WORK_TREE="/" INSTRUMENT_VENDOR="${INSTRUMENT_VENDOR}" ONE_CODEX_REPORT_FILENAME="${ONE_CODEX_REPORT_FILENAME}" ONE_CODEX_REPORT_LOGO="${ONE_CODEX_REPORT_LOGO}" ARTIC_PRIMER_VERSION="${ARTIC_PRIMER_VERSION}" conda run -n jobscript-env jupyter nbconvert --execute --to onecodex_pdf --ExecutePreprocessor.timeout=-1 --output="${ONE_CODEX_REPORT_FILENAME}" --output-dir="." report.ipynb
 
 echo "Removing unnecessary files"
 rm -f aa_codes.txt \
