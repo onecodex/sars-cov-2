@@ -13,7 +13,7 @@ RUN apt-get update \
     && apt-get autoclean \
     && apt-get install -y gnupg curl \
     && curl -sL https://deb.nodesource.com/setup_14.x  | bash - \
-    && apt-get install -y nodejs \
+    && apt-get install -y nodejs npm \
     unzip \
     default-jre \
     && apt-get clean \
@@ -60,16 +60,13 @@ COPY /reference/vcf_filter.edited.py /root/miniconda3/envs/artic/lib/python3.6/s
 RUN mkdir /primer_schemes
 COPY /reference/primer_schemes/ /primer_schemes/
 
+
 # install pangolin into conda environment "pangolin"
-RUN git clone https://github.com/cov-lineages/pangolin.git \
-        && cd pangolin \
-        && git checkout v4.2 \
-        && conda env create -f environment.yml \
-        && conda run -n pangolin python setup.py install \
-        && conda clean -a
+RUN conda create -n pangolin
+RUN conda install --solver libmamba -c bioconda -c conda-forge -c defaults -n pangolin pangolin==4.3
 
 # install nextclade & download sars-cov-2 dataset
-RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.9.1/nextclade-x86_64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
+RUN curl -fsSL 'https://github.com/nextstrain/nextclade/releases/download/2.14.0/nextclade-x86_64-unknown-linux-gnu' -o '/usr/local/bin/nextclade' && chmod +x /usr/local/bin/nextclade
 RUN /usr/local/bin/nextclade dataset get --name 'sars-cov-2' --output-dir '/usr/local/bin/data/sars-cov-2'
 
 # Setup onecodex_pdf export option
