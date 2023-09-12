@@ -34,8 +34,10 @@ jobs:
           pip install -q -U pip
           pip install --progress-bar=off -r requirements.txt
 
-      - name: Docker build
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Docker build
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -46,8 +48,6 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Run lint checks & tests
-        with:
-          cache-from: type=gha
         run: |
           . venv/bin/activate
           make test
