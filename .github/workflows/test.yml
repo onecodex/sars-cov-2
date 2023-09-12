@@ -34,6 +34,9 @@ jobs:
           pip install -q -U pip
           pip install --progress-bar=off -r requirements.txt
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Docker build
         uses: docker/build-push-action@v5
         with:
