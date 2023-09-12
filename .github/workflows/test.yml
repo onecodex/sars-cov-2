@@ -35,8 +35,13 @@ jobs:
           pip install --progress-bar=off -r requirements.txt
 
       - name: Docker build
-        run: |
-          docker build -t covid19 .
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: covid19
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run lint checks & tests
         run: |
