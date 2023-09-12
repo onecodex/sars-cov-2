@@ -42,9 +42,8 @@ jobs:
         with:
           context: .
           push: false
-          images: covid19
           load: true
-          tags: latest
+          tags: covid19:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
