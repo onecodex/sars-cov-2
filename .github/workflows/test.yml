@@ -34,9 +34,23 @@ jobs:
           pip install -q -U pip
           pip install --progress-bar=off -r requirements.txt
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Docker build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: covid19:latest
+
+      - name: Check docker image
         run: |
-          docker build -t covid19 .
+          echo "######## DOCKER IMAGES ########"
+          docker images
+          # ensure image is actually present before moving on
+          docker image inspect covid19:latest && echo "--- image built and loaded"
+          echo "######## DOCKER IMAGES ########"
 
       - name: Run lint checks & tests
         run: |

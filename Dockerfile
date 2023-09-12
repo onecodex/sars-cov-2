@@ -34,15 +34,10 @@ ENV PATH=$PATH:/opt/miniconda3/bin/
 
 # install environment's dependencies
 COPY environment.yml /opt/
-RUN conda env create -f /opt/environment.yml
+RUN conda env create --solver libmamba --file /opt/environment.yml
 
-# install artic into conda environment "artic"
-RUN git clone https://github.com/artic-network/fieldbioinformatics.git \
-        && cd fieldbioinformatics \
-        && git checkout 1.2.1 \
-      	&& conda env create -f environment.yml \
-        && conda run -n artic python setup.py install \
-        && conda clean -a
+RUN conda create -n artic
+RUN conda install --name artic --solver libmamba -c bioconda -c conda-forge -c defaults artic==1.2.3
 
 # install snpeff
 RUN curl -k -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_5covid19_core.zip/download --output snpEff_v4_5covid19_core.zip\
