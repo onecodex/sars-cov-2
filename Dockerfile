@@ -37,7 +37,7 @@ COPY environment.yml /opt/
 RUN conda env create --solver libmamba --file /opt/environment.yml
 
 RUN conda create -n artic
-RUN conda install --solver libmamba -c bioconda -c conda-forge -c defaults artic==1.2.3
+RUN conda install --name artic --solver libmamba -c bioconda -c conda-forge -c defaults artic==1.2.3
 
 # install snpeff
 RUN curl -k -L https://sourceforge.net/projects/snpeff/files/snpEff_v4_5covid19_core.zip/download --output snpEff_v4_5covid19_core.zip\
