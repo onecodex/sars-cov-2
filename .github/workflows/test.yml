@@ -50,6 +50,9 @@ jobs:
       - name: Run lint checks & tests
         run: |
           . venv/bin/activate
+          echo "######## DOCKER IMAGES ########"
+          docker images
+          echo "######## DOCKER IMAGES ########"
           make test
 
       - name: Upload Report PDFs
