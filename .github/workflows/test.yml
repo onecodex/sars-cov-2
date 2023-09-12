@@ -47,12 +47,17 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Check docker image
+        run: |
+          echo "######## DOCKER IMAGES ########"
+          docker images
+          # ensure image is actually present before moving on
+          docker image inspect covid19:latest && echo "--- image built and loaded"
+          echo "######## DOCKER IMAGES ########"
+
       - name: Run lint checks & tests
         run: |
           . venv/bin/activate
-          echo "######## DOCKER IMAGES ########"
-          docker images
-          echo "######## DOCKER IMAGES ########"
           make test
 
       - name: Upload Report PDFs
