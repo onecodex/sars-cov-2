@@ -1,7 +1,5 @@
 # SARS-CoV-2 variant calling
 
-Version v0.7.2
-
 [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/test/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Actions Status](https://github.com/onecodex/sars-cov-2/workflows/pre-commit/badge.svg)](https://github.com/onecodex/sars-cov-2/actions) [![Docker Repository on Quay](https://quay.io/repository/refgenomics/covid19/status "Docker Repository on Quay")](https://quay.io/repository/refgenomics/covid19)
 
 This pipeline performs consensus assembly and variant calling for amplicon sequencing data (Illumina or Oxford Nanopore) generated using the [`ARTIC protocol`](https://artic.network/ncov-2019). The user can specify a primer set to be used for trimming alignments; this is assumed to be **ARTIC V4.1** if not specified.
