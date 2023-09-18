@@ -23,7 +23,7 @@ def test_jobscript_illumina(tmp_path, run_snp_mutator, run_art, run_jobscript, n
     # generate some data
     run_snp_mutator(input_fasta_file="reference/nCoV-2019.reference.fasta", num_subs=num_subs)
     run_art(coverage=30)
-    run_jobscript(input_filename="simulated_reads.fastq.gz")
+    run_jobscript(input_filename="simulated_reads.fastq.gz", instrument_vendor="Illumina MiSeq")
 
     assert os.path.exists(tmp_path / "report.pdf")
 
